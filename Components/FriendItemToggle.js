@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, TextInput, Image } from 'react-native';
+import Utils from "../Utils/Utils"
 import { connect } from "react-redux";
 
 
@@ -54,11 +55,11 @@ class FriendItemToggleComponent extends React.Component {
                 <Text style={{color:"rgba(130,130,130,1)", fontSize:23}}>{this.props.friend.won?this.props.friend.won:0}</Text><Text>{" won"}</Text>
               </View>
             </View>
-            <View style={{flex:1, flexDirection:"column", marginLeft:20}}>
+            <View style={{width:60, flexDirection:"column", marginLeft:20, backgroundColor:"red", borderRadius:20, borderWidth:1}}>
               <View style={{flex:1, flexDirection:"row", alignItems:"center"}}>
                 <Text>{"Witness"}</Text><Text style={{color:"rgba(130,130,130,1)", fontSize:23}}>{this.props.friend.witnessOf.length}</Text>
               </View>
-              <Text>{"3 STARS"}</Text>
+              {Utils.displayMark(this.props.friend.judgeNote)}
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.toggleFriend} style={{height:50, width:50,  flexDirection:"row", justifyContent:"center", alignItems:"center"}}>

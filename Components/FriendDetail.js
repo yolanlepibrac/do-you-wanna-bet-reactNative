@@ -6,6 +6,8 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { ProgressCircle }  from 'react-native-svg-charts'
 
+import Utils from "../Utils/Utils"
+
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -183,7 +185,7 @@ class FriendDetailComponent extends React.Component {
             </View>
             {this.state.friend.judgeNote ?
               <TouchableOpacity onPress={this.rankFriend}>
-              {this.displayStars(Math.floor(this.state.friend.judgeNote*2)/2)}
+                {Utils.displayMark(this.state.friend.judgeNote)}
               </TouchableOpacity>
               :
               <TouchableOpacity onPress={this.toggleRankFriend} style={{backgroundColor:"rgba(110,219,124,1)", borderWidth:0, borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
@@ -195,7 +197,7 @@ class FriendDetailComponent extends React.Component {
             <View style={{position:"absolute", top:0, width:0, flex:1, width:"100%", height:"100%", backgroundColor:"rgba(255,255,255,0.95)", zIndex:101}}>
               <View style={{position:"absolute", top:50, left:"10%", width:"80%", height:100, alignItems:"center", flexDirection:"column", zIndex:102}}>
                 <View style={{position:"absolute", top:0, left:0, width:250, height:70, alignItems:"center", flexDirection:"column", zIndex:103}}>
-                  {this.displayStars(Math.floor(this.state.myMark*2)/2)}
+                  {Utils.displayMark(this.state.myMark)}
                 </View>
                 <View style={{position:"absolute", top:0, left:0, width:250, height:70, alignItems:"center", flexDirection:"row", zIndex:104}}>
                   <TouchableOpacity onPress={()=>this.setRank(1)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0.2)"}}>
