@@ -48,18 +48,23 @@ class FriendItemToggleComponent extends React.Component {
         }
         <View style={{flex:1, flexDirection:"row", marginLeft:20}}>
           <TouchableOpacity style={{height:60, flex:1,  flexDirection:"row", justifyContent:"space-between", alignItems:"center"}} onPress={this.openFriendDetail}>
-            <View style={{flex:1, flexDirection:"column", borderRightWidth:1, borderColor:"black"}}>
+            <View style={{flex:1, flexDirection:"column"}}>
               <Text style={{ fontSize:18, marginBottom:5}}>{this.props.friend.userName}</Text>
               <View style={{flex:1, flexDirection:"row", alignItems:"center"}}>
                 <Text style={{color:"rgba(130,130,130,1)", fontSize:23}}>{this.props.friend.bets.length}</Text><Text>{" bets"}</Text>
-                <Text style={{color:"rgba(130,130,130,1)", fontSize:23}}>{this.props.friend.won?this.props.friend.won:0}</Text><Text>{" won"}</Text>
+                <Text style={{color:"rgba(130,130,130,1)", fontSize:23, marginLeft:10}}>{this.props.friend.won?this.props.friend.won:0}</Text><Text>{" won"}</Text>
               </View>
             </View>
-            <View style={{width:60, flexDirection:"column", marginLeft:20, backgroundColor:"red", borderRadius:20, borderWidth:1}}>
-              <View style={{flex:1, flexDirection:"row", alignItems:"center"}}>
-                <Text>{"Witness"}</Text><Text style={{color:"rgba(130,130,130,1)", fontSize:23}}>{this.props.friend.witnessOf.length}</Text>
+            <View style={{width:90, height:40, padding:5, flexDirection:"column", marginLeft:20, marginRight:20, backgroundColor:"rgba(210,210,210,1)", borderRadius:5, borderWidth:1, borderColor:"rgba(200,200,200,1)", alignItems:"center", overflow:"hidden"}}>
+              <View style={{flex:1, flexDirection:"row", alignItems:"space-between"}}>
+                <View>
+                  <Text style={{color:"white", fontSize:10}}>{"Judged :"}</Text>
+                </View>
+                <View style={{marginLeft:5}}>
+                  <Text style={{color:"white", fontSize:10}}>{this.props.friend.witnessOf.length + "bets"}</Text>
+                </View>
               </View>
-              {Utils.displayMark(this.props.friend.judgeNote)}
+              {Utils.displayMark(this.props.friend.judgeNote, 80)}
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.toggleFriend} style={{height:50, width:50,  flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
