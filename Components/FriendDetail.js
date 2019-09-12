@@ -71,10 +71,15 @@ class FriendDetailComponent extends React.Component {
       }
     }
     if(!friendWasWitnessOfMyBet){
-      this.setState({rankOpen:true})
+      this.setState({rankOpen:!this.state.rankOpen})
     }else{
       this._showAlert("This guy never judge one of you bet")
     }
+  }
+
+  validate = () => {
+    this.setState({rankOpen:false})
+    //API.RankmyFriend(this.state.friend.id, this.state.myMark)
   }
 
   _showAlert = (errorMessage) => {
@@ -194,28 +199,32 @@ class FriendDetailComponent extends React.Component {
             }
           </View>
           {this.state.rankOpen ?
-            <View style={{position:"absolute", top:0, width:0, flex:1, width:"100%", height:"100%", backgroundColor:"rgba(255,255,255,0.95)", zIndex:101}}>
-              <View style={{position:"absolute", top:50, left:"10%", width:"80%", height:100, alignItems:"center", flexDirection:"column", zIndex:102}}>
-                <View style={{position:"absolute", top:0, left:0, width:250, height:70, alignItems:"center", flexDirection:"column", zIndex:103}}>
-                  {Utils.displayMark(this.state.myMark, 300)}
-                </View>
-                <View style={{position:"absolute", top:0, left:0, width:250, height:70, alignItems:"center", flexDirection:"row", zIndex:104}}>
-                  <TouchableOpacity onPress={()=>this.setRank(1)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0.2)"}}>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>this.setRank(2)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0.2)"}}>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>this.setRank(3)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0.2)"}}>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>this.setRank(4)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0.2)"}}>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={()=>this.setRank(5)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0.2)"}}>
-                  </TouchableOpacity>
+            <TouchableOpacity onPress={this.toggleRankFriend} style={{position:"absolute", top:0, width:0, flex:1, width:"100%", height:"100%", backgroundColor:"rgba(255,255,255,0.95)", zIndex:101, alignItems:"center", justifyContent:"center"}}>
+              <View style={{flex:1, width:"100%", justifyContent:"flex-end", flexDirection:"column", alignItems:"center"}}>
+                <View style={{height:100, width:250, zIndex:102}}>
+                  <View style={{position:"absolute", top:0, left:0, width:250, height:70,justifyContent:"center", alignItems:"center", flexDirection:"column", zIndex:103}}>
+                    {Utils.displayMark(this.state.myMark, 250)}
+                  </View>
+                  <View style={{position:"absolute", top:0, left:0, width:250, height:70, alignItems:"center", flexDirection:"row", zIndex:104}}>
+                    <TouchableOpacity onPress={()=>this.setRank(1)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0)"}}>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>this.setRank(2)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0)"}}>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>this.setRank(3)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0)"}}>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>this.setRank(4)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0)"}}>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>this.setRank(5)} style={{width:50, height:50, backgroundColor:"rgba(0,0,100,0)"}}>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
-              <TouchableOpacity onPress={this.toggleRankFriend}  style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
-                <Text style={{color:"white", fontWeight:"bold"}}>VALIDATE</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={{flex:1}}>
+                <TouchableOpacity onPress={this.validate}  style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
+                  <Text style={{color:"white", fontWeight:"bold"}}>VALIDATE</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
             :
             null
           }

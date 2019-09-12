@@ -95,7 +95,7 @@ class NoAccountComponent extends React.Component {
 
 
   login = (email) => {
-    this.setState({displayLoading:true})
+    //this.setState({displayLoading:true})
     API.getUserDataByEmail(email).then((dataCurrentUser)=>{
       if(dataCurrentUser.status != 200 ){
         this._showAlert("sorry we did not find you account, check your connexion")
@@ -117,7 +117,7 @@ class NoAccountComponent extends React.Component {
               displayLoading:false,
               email:email,
             })
-            this.props.navigation.navigate("TopNavigation", {email:email})
+            //this.props.navigation.navigate("TopNavigation", {email:email})
             //console.log("everythung ok")
           });
         });
@@ -126,6 +126,7 @@ class NoAccountComponent extends React.Component {
       this._showAlert("the server can not be reached. Please, check your connexion !")
       this.setState({displayLoading:false})
     });
+    this.props.navigation.navigate("TopNavigation", {email:email})
   }
 
 
