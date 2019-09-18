@@ -101,10 +101,19 @@ class FriendDetailComponent extends React.Component {
   validate = () => {
     this.setState({rankOpen:false, displayLoading:true})
     API.noteFriend(this.props.accountState.account.id, this.state.friend.id, this.state.myMark).then((res)=>{
-      this.props.replaceFriend(res.data.friendNoted)
-      this.props.replaceFriend(res.data.friendNoteGiver)
+      if(res.data.errorOccured){
+        this._showAlert("Impossible to note your friend, please try again")
+      }
+      console.log(res.data.friendNoted)
+      console.log(res.data.friendNoteGiver)
       if(res.data.friendNoted.id !== undefined){
+        this.props.replaceFriend(res.data.friendNoted)
+      }
+      if(res.data.friendNoteGiver.id !== undefined){
+        this.props.replaceFriend(res.data.friendNoteGiver)
+      }
 
+      if(res.data.friendNoted.id !== undefined){
         let newAccountState = this.props.accountState
         for (var i = 0; i < newAccountState.friends.length; i++) {
           if(newAccountState.friends[i].id === res.data.friendNoted.id){

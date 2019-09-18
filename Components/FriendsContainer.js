@@ -55,10 +55,12 @@ class FriendsContainerComponent extends React.Component {
   }
 
   toggleFriend = (friendToCheck) => {
+    console.log(friendToCheck.id)
     let tabOfIdOfFriends = this.state.friends
     let tabOfIdOfFriendsID = this.state.friends.map((friend)=>(friend.id))
     if(!tabOfIdOfFriendsID.includes(friendToCheck.id)){
       tabOfIdOfFriends.push(friendToCheck)
+      tabOfIdOfFriendsID.push(friendToCheck.id);
     }else{
       let index = tabOfIdOfFriendsID.indexOf(friendToCheck.id);
       if (index !== -1){
@@ -70,9 +72,10 @@ class FriendsContainerComponent extends React.Component {
     this.setState({
       tabOfIdOfFriendsAreadyFriends:tabOfIdOfFriends
     })
+    console.log(tabOfIdOfFriendsID)
     API.toggleFriend(this.props.accountState.account.id, tabOfIdOfFriendsID).then((data)=>{
         //console.log(data.data)
-    },function(error){
+    }).catch((error)=>{
         //console.log(error);
         this._showAlert("the server can not be reached. Please, check your connexion !")
         return;

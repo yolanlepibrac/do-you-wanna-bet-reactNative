@@ -181,7 +181,7 @@ class BetItemComponent extends React.Component {
 
   displayStatus = () => {
     if(this.state.iAccepted===false){
-      return <Text style={{position:"absolute",  height:30, top:30, right:70,color:"red"}}>REFUSED</Text>
+      return <Text style={{position:"absolute",  height:30, top:30, right:70,color:"grey"}}>REFUSED</Text>
 
     }else if(this.state.iAccepted!==true && this.state.iAccepted!==false){
       if(this.state.isPassed || !this.state.bet.current){
@@ -204,31 +204,11 @@ class BetItemComponent extends React.Component {
         }
       }
     }
-    /*
-    if(this.state.iAccepted!==true && this.state.iAccepted!==false && !this.state.isPassed && this.state.bet.current){
-      return <Text style={{position:"absolute",  height:30, top:30, right:70,  fontWeight:"bold"}}>NEW</Text>
-
-    }else if(this.state.iAccepted!==true && this.state.iAccepted!==false && (this.state.isPassed || !this.state.bet.current)){
-      return <Text style={{position:"absolute",  height:30, top:30, right:70,color:"grey",}}>CLOSED</Text>
-
-    }else if(this.state.iAccepted===true && (this.state.isPassed || !this.state.bet.current)){
-      return <Text style={{position:"absolute",  height:30, top:30, right:70,color:"red"}}>REFUSED</Text>
-
-    }else if(this.state.iAccepted===false){
-      return <Text style={{position:"absolute",  height:30, top:30, right:70,color:"red"}}>REFUSED</Text>
-
-    }else if(!this.state.bet.current && this.state.iAccepted===true && this.state.iWon){
-      return <Text style={{position:"absolute",  height:30, top:30, right:70,color:"green"}}>WON</Text>
-
-    }else if(!this.state.bet.current && this.state.iAccepted===true){
-      return <Text style={{position:"absolute",  height:30, top:30, right:70,color:"red"}}>LOST</Text>
-
-    }
-    */
 
   }
 
   render(){
+
       if(!((this.state.players1.length>0) && (this.state.players2.length>0) && (this.state.witness.length>0))){
         return(
           <View style={{flexDirection:"row",  alignItems:"center", justifyContent:"center", height:100, flex:1}}>
@@ -237,8 +217,9 @@ class BetItemComponent extends React.Component {
           </View>
         )
       }else{
+        let winOrLooseSet = !this.state.bet.current && this.state.iAccepted===true && !this.state.imTheWitness
         return(
-          <TouchableOpacity onPress={this.onClick} style={{flexDirection:"row",  alignItems:"flex-start", height:100, flex:1, alignItems:"center", backgroundColor:this.state.iAccepted===false?"rgba(200,0,0,0.1)":this.state.bet.current&&!this.state.isPassed?"rgba(200,200,200,0)":"rgba(200,200,200,0.3)"}}>
+          <TouchableOpacity onPress={this.onClick} style={{flexDirection:"row",  alignItems:"flex-start", height:100, flex:1, alignItems:"center", backgroundColor:winOrLooseSet&&this.state.iWon?"rgba(0,200,0,0.1)":winOrLooseSet&&!this.state.iWon?"rgba(200,0,0,0.1)":this.state.bet.current&&!this.state.isPassed?"rgba(200,200,200,0)":"rgba(200,200,200,0.3)"}}>
             <View style={{width:100, height:100}}>
               {this.state.players1.length>0 ?
                   <View style={{width:100, height:100, position:"absolute", top:5, left:5}}>

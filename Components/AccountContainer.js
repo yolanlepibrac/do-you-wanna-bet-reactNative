@@ -408,22 +408,6 @@ class AccountContainerComponent extends React.Component {
                         </TouchableOpacity>
                       }
                     </View>
-                    {
-                      /*
-                      <View style={{flexDirection:"column",}}>
-                        <Text style={{fontSize:13}}>Birth</Text>
-                        <View style={{flexDirection:"row", alignItems:"space-between", justifyContent:"space-between",paddingRight:10, width:"100%"}}>
-                          <TouchableOpacity style={{width:75, height:25, borderRadius:2, fontSize:15, backgroundColor:"rgba(235,235,235,1)",justifyContent:"center", alignItems:"center" }}><Text style={{color:"white", fontWeight:"bold"}}>DAY</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={{width:75, height:25, borderRadius:2, fontSize:15, backgroundColor:"rgba(235,235,235,1)",justifyContent:"center", alignItems:"center" }}><Text style={{color:"white", fontWeight:"bold"}}>MONTH</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity style={{width:75, height:25, borderRadius:2, fontSize:15, backgroundColor:"rgba(235,235,235,1)",justifyContent:"center", alignItems:"center" }}><Text style={{color:"white", fontWeight:"bold"}}>YEAR</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                      */
-                    }
-
                   </View>
 
 
@@ -472,8 +456,9 @@ class AccountContainerComponent extends React.Component {
                       <Text style={{width: 200, fontSize:13}}>{"Password"}
                       </Text>
                       <View style={{flexDirection: 'column', marginBottom:5, marginTop:5, fontSize:15, justifyContent:"flex-start", marginLeft:0, marginRight:0,}}>
-                        <TouchableOpacity onPress={this.changePassword} style={{backgroundColor:"rgba(35,200,35,1)", marginTop:5, marginBottom:5, borderRadius:2}}>
-                          <Text style={{color:"white", height:30, fontSize:15, fontWeight:"bold", borderRadius:2, marginTop:5, marginBottom:5, marginLeft:10, marginRight:10}}>MODIFIE</Text>
+                        <TouchableOpacity onPress={this.changePassword} style={{width:75, height:25, borderRadius:2, fontSize:15, backgroundColor:"rgba(200,200,200,1)",justifyContent:"center", alignItems:"center"}}>
+                          <Text style={{color:"white", fontWeight:"bold"}}>MODIFIE
+                          </Text>
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -484,11 +469,9 @@ class AccountContainerComponent extends React.Component {
                     <View style={{flexDirection: 'column', alignItems:"flex-start",  paddingTop:10, paddingBottom:10, borderBottomWidth:1, paddingLeft:10, paddingRight:10,  borderBottomColor:"rgba(200,200,200,1)", borderBottomStyle:"solid", width:"100%"}}>
                       <Text style={{color:"grey"}}>OPTIONS</Text>
                     </View>
-                    <Text>option1</Text>
-                    <Text>option2</Text>
-                    <Text>option3</Text>
-                    <Text>option4</Text>
-
+                    <View style={{flexDirection: 'column', alignItems:"flex-start", width:"100%", paddingLeft:10, paddingRight:10}}>
+                      <Text>No option for now</Text>
+                    </View>
                   </View>
 
                 </View>

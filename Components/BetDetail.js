@@ -36,10 +36,23 @@ class BetDetailComponent extends React.Component {
 
   setBetInState = () => {
     let bet = this.props.navigation.getParam('bet', undefined);
+    let player1Exists = false;
+    let player2Exists = false;
+    for (var i = 0; i < bet.playersDetail.players1.length; i++) {
+      if(bet.playersDetail.players1[i].accepted === true){
+        player1Exists = true
+      }
+    }
+    for (var i = 0; i < bet.playersDetail.players2.length; i++) {
+      if(bet.playersDetail.players2[i].accepted === true){
+        player2Exists = true
+      }
+    }
+    this.setState({player2Exists : player2Exists, player1Exists : player1Exists})
     if(bet.playersDetail.witness.user.id === this.props.accountState.account.id){
       this.setState({judingAllow : true})
     }
-    this.setState({bet : bet,})
+    this.setState({bet : bet, currentWhenBeggin:bet.current})
   }
 
   toggleChooseWinner = () => {
@@ -48,9 +61,12 @@ class BetDetailComponent extends React.Component {
 
   validateWinner = () => {
     this.setState({chooseWinner:false, displayLoading:true})
-    console.log(this.state.bet.win)
-    API.setWinner(this.state.bet, this.state.bet.win, this.state.bet.current).then((data)=>{
+    console.log(this.state.bet.players1)
+    console.log(this.state.bet.players2)
+    console.log(this.state.currentWhenBeggin)
+    API.setWinner(this.state.bet, this.state.bet.win, this.state.currentWhenBeggin).then((data)=>{
       this.props.setWinner(data.data.bet, data.data.users.players1, data.data.users.players2 )
+      this.setState({currentWhenBeggin:false})
       let newAccountState = this.props.accountState
       for (var i = 0; i < newAccountState.witnessOf.length; i++) {
         if(newAccountState.witnessOf[i].id === data.data.bet.id){
@@ -58,8 +74,10 @@ class BetDetailComponent extends React.Component {
         }
       }
       this.props.navigation.setParams({listOBet : newAccountState})
-      console.log(data.data.users.players1[0].won)
-      console.log(data.data.users.players2[0].won)
+      console.log("player1 won " + data.data.users.players1[0].won)
+      console.log("player1 lost " + data.data.users.players1[0].lost)
+      console.log("player2 won " + data.data.users.players2[0].won)
+      console.log("player2 lost " +data.data.users.players2[0].lost)
       this.setState({ displayLoading:false})
     }).catch((error)=>{
       console.log(error)
@@ -179,21 +197,20 @@ class BetDetailComponent extends React.Component {
             onClick={this.setLoose}>
               {this.state.bet.playersDetail.players2.map((player, key)=>
                 <View key={key}>
-                  {player.accepted?
-                    <View style={{flexDirection:"row", width:"100%", padding:3, justifyContent:"space-between", alignItems:"center", overflow:"hidden"}}>
+                    <View style={{flexDirection:"row", width:"100%", padding:3, justifyContent:"space-between", alignItems:"center", overflow:"hidden", opacity:player.accepted?1:0.3}}>
                       {player.user.imageProfil ?
                         <Image source={{uri:player.user.imageProfil}} style={{borderRadius:25, width:50, height:50}}/>
                         :
                         <Image source={require('../assets/images/connectBig.png')} style={{borderRadius:25, width:50, height:50}}/>
                       }
                       <View style={{height:50,  alignItems:"center", justifyContent:"center", width:"100%"}}>
-                        <Text>{player.user.userName}</Text>
+                        {player.accepted === false ?
+                          <Text>REFUSED</Text>
+                          :
+                          <Text>{player.user.userName}</Text>
+                        }
                       </View>
                     </View>
-                    :
-                    null
-                  }
-
                 </View>
               )}
             </ScrollView>
@@ -271,7 +288,7 @@ class BetDetailComponent extends React.Component {
                 </View>
                 :null
               }
-              {(this.state.judingAllow) ?
+              {(this.state.judingAllow && this.state.player1Exists && this.state.player2Exists) ?
                 <View style={{flex:1,}}>
                   {!this.state.bet.isPassed ?
                     <TouchableOpacity onPress={this.toggleChooseWinner} style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
