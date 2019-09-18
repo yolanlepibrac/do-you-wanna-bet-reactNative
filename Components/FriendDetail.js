@@ -6,14 +6,16 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { ProgressCircle }  from 'react-native-svg-charts'
 
+import { replaceFriend } from "../Redux/Actions/index";
 import Utils from "../Utils/Utils"
+import API from '../Utils/API';
+
+import { withNavigationFocus } from 'react-navigation';
 
 
 function mapDispatchToProps(dispatch) {
   return {
-    sheetSelected:dispatch.sheetSelected,
-    setSheetSelected: (nameSheet) => dispatch(setSheetSelected(nameSheet)),
-    betSelected : {}
+    replaceFriend: (friend) => dispatch(replaceFriend(friend)),
   };
 };
 
@@ -22,6 +24,9 @@ class FriendDetailComponent extends React.Component {
     super(props)
     this.state = {
       myMark : 0,
+      friend : this.props.friend,
+      made : 0,
+      refused : 0,
      }
   }
 
@@ -34,7 +39,7 @@ class FriendDetailComponent extends React.Component {
   }
 
   toggleFriend = () => {
-    this.props.onClick(this.props.friend)
+    this.props.onClick(this.state.friend)
   }
 
   componentDidUpdate(prevProps) {
@@ -46,10 +51,32 @@ class FriendDetailComponent extends React.Component {
   }
 
   componentDidMount() {
+
     this.getPermissionAsync();
-      this.setState({
-        friend : this.props.navigation.getParam('friend', undefined),
-      })
+    let friend = this.props.navigation.getParam('friend', undefined)
+    this.setState({
+      friend : friend,
+    })
+    console.log(friend.bets)
+    for (var i = 0; i < friend.bets.length; i++) {
+      if(friend.bets[i].accepted){
+        this.setState({made : this.state.made + 1})
+      }else{
+        this.setState({refused : this.state.refused + 1})
+      }
+    }
+  }
+
+  isWitnessOfMyBet = (friend) =>  {
+    let friendWasWitnessOfMyBet = false
+    for (var i = 0; i < this.props.accountState.bets.length; i++) {
+      if(this.props.accountState.bets[i].current === false){
+        if(this.props.accountState.bets[i].witness === friend.id){
+          friendWasWitnessOfMyBet = true
+        }
+      }
+    }
+    return friendWasWitnessOfMyBet
   }
 
   getPermissionAsync = async () => {
@@ -62,29 +89,40 @@ class FriendDetailComponent extends React.Component {
   }
 
   toggleRankFriend = () => {
-    let friendWasWitnessOfMyBet = false
-    for (var i = 0; i < this.props.accountState.bets.length; i++) {
-      if(this.props.accountState.bets[i].current === false){
-        if(this.props.accountState.bets[i].witness === this.state.friend.id){
-          friendWasWitnessOfMyBet = true
-        }
-      }
-    }
-    if(!friendWasWitnessOfMyBet){
+    console.log(this.state.friend.judgeNotes)
+    console.log(this.calculjudgeNote(this.state.friend.judgeNotes))
+    if(this.isWitnessOfMyBet(this.state.friend)){
       this.setState({rankOpen:!this.state.rankOpen})
     }else{
-      this._showAlert("This guy never judge one of you bet")
+      this._showAlert("This guy never judged one of you bet")
     }
   }
 
   validate = () => {
-    this.setState({rankOpen:false})
-    //API.RankmyFriend(this.state.friend.id, this.state.myMark)
+    this.setState({rankOpen:false, displayLoading:true})
+    API.noteFriend(this.props.accountState.account.id, this.state.friend.id, this.state.myMark).then((res)=>{
+      this.props.replaceFriend(res.data.friendNoted)
+      this.props.replaceFriend(res.data.friendNoteGiver)
+      if(res.data.friendNoted.id !== undefined){
+
+        let newAccountState = this.props.accountState
+        for (var i = 0; i < newAccountState.friends.length; i++) {
+          if(newAccountState.friends[i].id === res.data.friendNoted.id){
+            newAccountState.friends[i] === res.data.friendNoted
+          }
+        }
+        this.setState({friend : res.data.friendNoted, friends : newAccountState.friends})
+      }
+      this.setState({displayLoading:false,})
+    }).catch((error)=>{
+      console.log(error)
+      this.setState({displayLoading:false,})
+    })
   }
 
   _showAlert = (errorMessage) => {
     Alert.alert(
-      'Impossible to judge',
+      'Impossible to note',
       errorMessage,
       [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
@@ -93,34 +131,6 @@ class FriendDetailComponent extends React.Component {
     )
   }
 
-  displayStars = (mark) => {
-    switch(mark) {
-      case 5 :
-        return <Image source={require('../assets/images/stars5.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 4.5 :
-        return <Image source={require('../assets/images/stars45.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 4 :
-        return <Image source={require('../assets/images/stars4.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 3.5 :
-        return <Image source={require('../assets/images/stars35.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 3:
-        return <Image source={require('../assets/images/stars3.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 2.5 :
-        return <Image source={require('../assets/images/stars25.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 2 :
-        return <Image source={require('../assets/images/stars2.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 1.5 :
-        return <Image source={require('../assets/images/stars15.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 1 :
-        return <Image source={require('../assets/images/stars1.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 0.5 :
-        return <Image source={require('../assets/images/stars05.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      case 0 :
-        return <Image source={require('../assets/images/stars0.png')} style={{borderRadius:75, width:300, height:50}}/>;
-      default:
-        return null;
-    }
-  }
 
   setRank = (value) => {
     this.setState({
@@ -128,10 +138,19 @@ class FriendDetailComponent extends React.Component {
     })
   }
 
+  calculjudgeNote = (tabofJudgeNote) => {
+    let sum = 0
+    for (var i = 0; i < tabofJudgeNote.length; i++) {
+      sum = sum + tabofJudgeNote[i].note
+    }
+    return sum/tabofJudgeNote.length
+  }
+
 
 
   render(){
-    if(this.state.friend !== undefined){
+
+    if(this.state.friend !== undefined && !this.state.displayLoading){
       return(
         <View style={{flex:1, flexDirection:"column",marginTop:10, alignItems:"center", justifyContent:"center", paddingLeft:20, paddingRight:20}}>
           <View style={{height:170, flexDirection:"row"}}>
@@ -142,7 +161,7 @@ class FriendDetailComponent extends React.Component {
             }
             <View style={{flex:1, flexDirection:"column", alignItems:"center", justifyContent:"center"}}>
               <Text style={{fontSize:30}}>{this.state.friend.userName}</Text>
-              <Text style={{fontSize:30, color:"rgba(100,100,100,1)"}}>{this.state.friend.email}</Text>
+              <Text style={{fontSize:15, color:"rgba(100,100,100,1)"}}>{this.state.friend.email}</Text>
             </View>
           </View>
           <View style={{width:"100%", height:1, backgroundColor:"rgba(100,100,100,1)", flexDirection:"row"}}>
@@ -152,30 +171,30 @@ class FriendDetailComponent extends React.Component {
               <View style={{flexDirection: 'column', alignItems:"flex-start"}}>
                 <View style={{flexDirection: 'row', alignItems:"flex-start"}}>
                   <Text style={{width:100, fontSize:15}}>{"bets made  : "}</Text>
-                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.props.accountState.bets.length}</Text>
+                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.state.made}</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems:"flex-start"}}>
                   <Text style={{width:100, fontSize:15}}>{"bets won   : "}</Text>
-                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.state.won}</Text>
+                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.state.friend.won !== undefined ? this.state.friend.won : 0}</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems:"flex-start"}}>
                   <Text style={{width:100, fontSize:15}}>{"bets lost  : "}</Text>
-                  <Text style={{width:50, fontSize:20, color:"grey"}}>{(this.state.numberOfBetsFinished-this.state.won)}</Text>
+                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.state.friend.lost !== undefined ? this.state.friend.lost : 0}</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems:"flex-start"}}>
                   <Text style={{width:100, fontSize:15}}>{"witness of : "}</Text>
-                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.props.accountState.witnessOf.length}</Text>
+                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.state.friend.witnessOf !== undefined ? this.state.friend.witnessOf.length : 0}</Text>
                 </View>
                 <View style={{flexDirection: 'row', alignItems:"flex-start"}}>
                   <Text style={{width:100, fontSize:15}}>{"friends    : "}</Text>
-                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.props.accountState.friends.length}</Text>
+                  <Text style={{width:50, fontSize:20, color:"grey"}}>{this.state.friend.friends !== undefined? this.state.friend.friends.length : 0}</Text>
                 </View>
               </View>
 
               <View style={{ width:160, height:160, alignItems:"center", justifyContent:"center"}}>
-                <ProgressCircle style={{height:160,width:160, position:"absolute", top:0, right:0}} progress={this.state.percentWon?this.state.percentWon:0} strokeWidth={30} progressColor={'rgb(134, 255, 155)'} backgroundColor={'rgb(255, 200,200)'} cornerRadius={2}/>
+                <ProgressCircle style={{height:160,width:160, position:"absolute", top:0, right:0}} progress={this.state.friend.won?this.state.friend.won/(this.state.friend.won+this.state.friend.lost):0} strokeWidth={30} progressColor={'rgb(134, 255, 155)'} backgroundColor={'rgb(255, 200,200)'} cornerRadius={2}/>
                 <View style={{height:160,width:160, position:"absolute", top:0, right:0, alignItems:"center", justifyContent:"center"}}>
-                  <Text style={{fontSize:35}}>{this.state.percentWon?this.state.percentWon*100 + "%":"0%"}
+                  <Text style={{fontSize:35}}>{this.state.friend.won?Math.round(this.state.friend.won/(this.state.friend.won+this.state.friend.lost)*100) + "%":"0%"}
                   </Text>
                 </View>
               </View>
@@ -184,13 +203,16 @@ class FriendDetailComponent extends React.Component {
 
           <View style={{width:"100%", height:1, backgroundColor:"rgba(100,100,100,1)", flexDirection:"row"}}>
           </View>
-          <View style={{flex:1, flexDirection:"column", marginTop:30, alignItems:"flex-start"}}>
-            <View style={{height:50, flexDirection:"row", alignItems:"center"}}>
-              <Text>{"Judge   "}</Text><Text style={{color:"rgba(130,130,130,1)", fontSize:25}}>{this.state.friend.witnessOf.length}</Text>
+          <View style={{flex:1, flexDirection:"column", marginTop:30, alignItems:"center",}}>
+            <View style={{height:50, flexDirection:"row", alignItems:"center", justifyContent:"center"}}>
+              {this.state.friend.witnessOf !== undefined ?
+                <View><Text style={{color:"rgba(130,130,130,1)", fontSize:25}}>{this.state.friend.witnessOf.length + " bets judged"}</Text></View>
+                :null
+              }
             </View>
-            {this.state.friend.judgeNote ?
-              <TouchableOpacity onPress={this.rankFriend}>
-                {Utils.displayMark(this.state.friend.judgeNote, 300)}
+            {this.state.friend.judgeNotes.length>0 ?
+              <TouchableOpacity onPress={this.toggleRankFriend}>
+                {Utils.displayMark(this.calculjudgeNote(this.state.friend.judgeNotes), 300)}
               </TouchableOpacity>
               :
               <TouchableOpacity onPress={this.toggleRankFriend} style={{backgroundColor:"rgba(110,219,124,1)", borderWidth:0, borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
@@ -248,5 +270,5 @@ const mapStateToProps = (state) => {
   }
 }
 
-const FriendDetail = connect(mapStateToProps, mapDispatchToProps)(FriendDetailComponent);
+const FriendDetail = connect(mapStateToProps, mapDispatchToProps)(withNavigationFocus(FriendDetailComponent));
 export default FriendDetail;

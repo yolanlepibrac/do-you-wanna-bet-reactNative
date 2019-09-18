@@ -18,6 +18,8 @@ export default class Signup extends React.Component {
             password: "",
             cpassword: "",
             imageProfil:"",
+            securePassword : true,
+            secureCPassword : true,
         }
     }
 
@@ -62,14 +64,32 @@ export default class Signup extends React.Component {
 
     };
 
+    toggleSecurePassword = () => {
+      console.log(this.state.securePassword)
+      this.setState({securePassword:!this.state.securePassword})
+    }
+
+    toggleSecureCPassword = () => {
+      this.setState({secureCPassword:!this.state.secureCPassword})
+    }
+
+    quitlogin = () => {
+      this.props.quit()
+    }
+
 
     render() {
         return(
-          <View style={{backgroundColor:"rgba(235,235,235,1)", padding:10, flex:1}}>
-            <View style={{marginBottom:10}}>
+          <View style={{backgroundColor:"rgba(235,235,235,1)", padding:10, flex:1 }}>
+            <View style={{marginBottom:10, flex:1}}>
+              <View style={{ height:30, paddingLeft:10, flex:1, width:"100%"}}>
+                <TouchableOpacity onPress={this.quitlogin} style={{position:"absolute", width:30, height:30, top:0, right:0, }}>
+                  <Image style={{ width:30, height:30,}} source={require('../assets/images/quit.png')}/>
+                </TouchableOpacity>
+              </View>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Full name
               </Text>
-              <TextInput onChangeText={text => this.onChangeUserName(text)} value={this.state.userName} autoCompleteType={"userName"} autoFocus={true} clearButtonMode={'while-editing'} style={{borderWidth:1, height:35, paddingLeft:10}}>
+              <TextInput onChangeText={text => this.onChangeUserName(text)} value={this.state.userName} autoCompleteType={"username"} autoFocus={true} clearButtonMode={'while-editing'} style={{borderWidth:1, height:35, paddingLeft:10}}>
               </TextInput>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Email
               </Text>
@@ -77,21 +97,34 @@ export default class Signup extends React.Component {
               </TextInput>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Password
               </Text>
-              <TextInput onChangeText={text => this.onChangePassword(text)} value={this.state.password} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10}}>
-              </TextInput >
+              <View style={{flexDirection:"row", width:"100%", flex:1}}>
+                <TextInput onChangeText={text => this.onChangePassword(text)} value={this.state.password} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.securePassword}>
+                </TextInput >
+                <TouchableOpacity onPress={this.toggleSecurePassword} style={{position:"absolute", width:30, height:35, top:0, right:20, }}>
+                  <Image style={{ width:35, height:35}} source={require('../assets/images/oeil.png')}/>
+                </TouchableOpacity>
+              </View>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Password
               </Text>
-              <TextInput onChangeText={text => this.onChangeCPassword(text)} value={this.state.cpassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10}}>
-              </TextInput >
+              <View >
+                <TextInput onChangeText={text => this.onChangeCPassword(text)} value={this.state.cpassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureCPassword}>
+                </TextInput >
+                <TouchableOpacity onPress={this.toggleSecureCPassword} style={{position:"absolute", width:30, height:35, top:0, right:20, }}>
+                  <Image style={{ width:35, height:35,}} source={require('../assets/images/oeil.png')}/>
+                </TouchableOpacity>
+              </View>
             </View>
-            <TouchableOpacity onPress={this._pickImage}>
-            {this.state.imageProfil ?
-              <Image source={{uri:this.state.imageProfil}} style={{borderRadius:5, width:50, height:50}}/>
-              :
-              <Image source={require('../assets/images/connectBig.png')} style={{borderRadius:5, width:50, height:50}}/>
-            }
-            </TouchableOpacity>
-            <View style={{backgroundColor:"rgba(245,245,245,1)", justifyContent:"center", alignItems:"center"}}>
+            <View style={{flexDirection:"row", width:"100%", flex:1, justifyContent:"center"}}>
+              <TouchableOpacity onPress={this._pickImage} style={{height:70}}>
+              {this.state.imageProfil ?
+                <Image source={{uri:this.state.imageProfil}} style={{borderRadius:5, width:70, height:70}}/>
+                :
+                <Image source={require('../assets/images/connectBig.png')} style={{borderRadius:5, width:70, height:70}}/>
+              }
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ justifyContent:"center", alignItems:"center"}}>
               <TouchableOpacity onPress={() => this.signup()}  style={{backgroundColor:"rgba(35,200,35,1)", marginTop:5, marginBottom:5, borderRadius:2}}>
                 <Text style={{color:"white", height:30, fontSize:15, fontWeight:"bold", borderRadius:2, marginTop:5, marginBottom:5, marginLeft:10, marginRight:10}}>SIGN UP</Text>
               </TouchableOpacity>

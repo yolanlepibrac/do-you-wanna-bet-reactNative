@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import FriendItemToggle from './FriendItemToggle'
 import API from '../Utils/API';
 import { setFriendsState } from "../Redux/Actions/index";
+import { withNavigationFocus } from 'react-navigation';
 
 const selectedColor = "rgba(123,250,155,1)";
 const nonSelectedColor = "rgba(240,240,240,1)";
@@ -28,7 +29,18 @@ class FriendsContainerComponent extends React.Component {
       searchActive:false,
       displayLoading:false,
       searchMade : false,
+      friends : this.props.accountState.friends
      }
+  }
+
+  componentDidUpdate(prevProps){
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.setState({friends : this.props.accountState.friends})
+    }
+  }
+
+  componentDidMount = () => {
+    this.setState({friends : this.props.accountState.friends})
   }
 
   displaySearch = () => {
@@ -43,8 +55,8 @@ class FriendsContainerComponent extends React.Component {
   }
 
   toggleFriend = (friendToCheck) => {
-    let tabOfIdOfFriends = this.props.accountState.friends
-    let tabOfIdOfFriendsID = this.props.accountState.friends.map((friend)=>(friend.id))
+    let tabOfIdOfFriends = this.state.friends
+    let tabOfIdOfFriendsID = this.state.friends.map((friend)=>(friend.id))
     if(!tabOfIdOfFriendsID.includes(friendToCheck.id)){
       tabOfIdOfFriends.push(friendToCheck)
     }else{
@@ -109,6 +121,10 @@ class FriendsContainerComponent extends React.Component {
     )
   }
 
+  openFriend = (friend) => {
+    this.props.navigation.navigate("FriendDetail", {friend:friend})
+  }
+
   render(){
     return(
       <View style={{flexDirection:"column", justifyContent:"flex-start", alignItems:"center", flex:1,}}>
@@ -142,7 +158,7 @@ class FriendsContainerComponent extends React.Component {
                 <View style={{flexDirection:"column", flex:1, width:"100%"}}>
                   {this.state.tabOfFriendObject.length>0 ?
                     <ScrollView style={{flex:1, flexDirection:"column"}}>
-                      {this.state.tabOfFriendObject.map((friend, key)=><FriendItemToggle friend={friend} key={key} onClick={this.toggleFriend} alreadyFriend={this.state.tabOfIdOfFriendsAreadyFriends.map((friend)=>(friend.id)).includes(friend.id)} navigation={this.props.navigation}/>)}
+                      {this.state.tabOfFriendObject.map((friend, key)=><FriendItemToggle friend={friend} key={key} onClick={this.toggleFriend} alreadyFriend={this.state.tabOfIdOfFriendsAreadyFriends.map((friend)=>(friend.id)).includes(friend.id)} navigation={this.props.navigation} openFriend={this.openFriend}/>)}
                     </ScrollView>
                     :
                     <View>
@@ -154,7 +170,8 @@ class FriendsContainerComponent extends React.Component {
               :
               <View style={{flex:1, flexDirection:"row"}}>
                 <ScrollView style={{flex:1, flexDirection:"column"}}>
-                  {this.props.accountState.friends.map((friend, key)=><FriendItemToggle friend={friend} key={key} onClick={this.toggleFriend} alreadyFriend={this.state.tabOfIdOfFriendsAreadyFriends.map((friend)=>(friend.id)).includes(friend.id)} navigation={this.props.navigation}/>)}
+                  {this.state.friends.map((friend, key)=><FriendItemToggle friend={friend} key={key} onClick={this.toggleFriend} alreadyFriend={this.state.tabOfIdOfFriendsAreadyFriends.map((friend)=>(friend.id)).includes(friend.id)} navigation={this.props.navigation}
+                  openFriend={this.openFriend}/>)}
                 </ScrollView>
               </View>
             }
@@ -171,5 +188,5 @@ const mapStateToProps = (state) => {
   }
 }
 
-const FriendsContainer = connect(mapStateToProps, mapDispatchToProps)(FriendsContainerComponent);
+const FriendsContainer = connect(mapStateToProps, mapDispatchToProps)(withNavigationFocus(FriendsContainerComponent));
 export default FriendsContainer;

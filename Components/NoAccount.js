@@ -77,9 +77,11 @@ class NoAccountComponent extends React.Component {
 
 
   componentDidMount = () => {
+
     AsyncStorage.getItem('email').then((emailStored) => {
       if(emailStored){
-        this.login(emailStored)
+        console.log(emailStored)
+        this.loginAlreadyConnected(emailStored)
       }
     })
   }
@@ -92,10 +94,28 @@ class NoAccountComponent extends React.Component {
     }
   }
 
+  login = (email, password) => {
+    this.setState({displayLoading:true})
+    API.login(email, password).then((dataUser)=>{
+      console.log(dataUser.data)
+      this.props.changeAccountState(dataUser.data.user.userData);
+      this.props.getUserFriends(dataUser.data.user.friends);
+      this.props.getUserBets(dataUser.data.user.bets);
+      this.props.getUserWitnessOf(dataUser.data.user.witnessOf);
+      this.stayLog(dataUser.data.user.userData.email)
+      this.props.navigation.navigate("TopNavigation", {email:email})
+      this.setState({displayLoading:false})
+    }).catch(error => {
+        this._showAlert("Error, please check your connexion")
+        console.log(error)
+        this.setState({displayLoading:false})
+    });
+  }
 
 
-  login = (email) => {
-    //this.setState({displayLoading:true})
+
+  loginAlreadyConnected = (email) => {
+    this.setState({displayLoading:true})
     API.getUserDataByEmail(email).then((dataCurrentUser)=>{
       if(dataCurrentUser.status != 200 ){
         this._showAlert("sorry we did not find you account, check your connexion")
@@ -104,21 +124,20 @@ class NoAccountComponent extends React.Component {
       console.log("userdata ok")
       this.props.changeAccountState(dataCurrentUser.data.userData);
       this.stayLog(dataCurrentUser.data.userData.email)
+
+      console.log(dataCurrentUser.data.userData.friends)
       API.getUsersDataByID(dataCurrentUser.data.userData.friends).then((dataFriends)=>{
-        console.log(dataFriends.data.usersData)
         this.props.getUserFriends(dataFriends.data.usersData);
-        API.getBetsDataByID(dataCurrentUser.data.userData.bets).then((dataBets)=>{
-          console.log(dataBets.data.bets)
+        API.getBetsDataByID(dataCurrentUser.data.userData.bets.map((bet)=>(bet.id))).then((dataBets)=>{
           this.props.getUserBets(dataBets.data.bets);
-          API.getUsersDataByID(dataCurrentUser.data.userData.witnessOf).then((dataWitnessOf)=>{
-            console.log(dataWitnessOf.data.usersData)
-            this.props.getUserWitnessOf(dataWitnessOf.data.usersData);
+          API.getBetsDataByID(dataCurrentUser.data.userData.witnessOf).then((dataWitnessOf)=>{
+            this.props.getUserWitnessOf(dataWitnessOf.data.bets);
             this.setState({
               displayLoading:false,
               email:email,
             })
-            //this.props.navigation.navigate("TopNavigation", {email:email})
-            //console.log("everythung ok")
+            this.props.navigation.navigate("TopNavigation", {email:email})
+            this.setState({displayLoading:false})
           });
         });
       });
@@ -126,7 +145,7 @@ class NoAccountComponent extends React.Component {
       this._showAlert("the server can not be reached. Please, check your connexion !")
       this.setState({displayLoading:false})
     });
-    this.props.navigation.navigate("TopNavigation", {email:email})
+    //this.props.navigation.navigate("TopNavigation", {email:email})
   }
 
 
@@ -175,8 +194,9 @@ class NoAccountComponent extends React.Component {
         this._showAlert("This email is already used")
         this.setState({displayLoading:false})
       }
-    },function(error){
+    },(error) => {
         this._showAlert("error with server")
+        console.log(error)
         this.setState({displayLoading:false});
     })
   }
@@ -211,13 +231,13 @@ class NoAccountComponent extends React.Component {
           }
           {this.state.popupConnexion ?
             <View style={{width:screenWidth*0.9, position:"absolute", top:100,  zIndex:11}}>
-              <Login login={this.login} displayLoading={this.displayLoading} setError={this._showAlert}/>
+              <Login login={this.login} displayLoading={this.displayLoading} setError={this._showAlert} quit={this.quitLoginAndSignUp}/>
             </View>
             : null
           }
           {this.state.popupSignUp ?
-            <View style={{width:screenWidth*0.9, position:"absolute",  top:100,  zIndex:11}}>
-              <Signup signup={this.signup} displayLoading={this.displayLoading} setError={this._showAlert}/>
+            <View style={{width:screenWidth*0.9, position:"absolute",  top:50,  zIndex:11}}>
+              <Signup signup={this.signup} displayLoading={this.displayLoading} setError={this._showAlert} quit={this.quitLoginAndSignUp}/>
             </View>
             : null
            }

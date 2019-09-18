@@ -94,8 +94,10 @@ class MyBetContainerComponent extends React.Component {
       });
 
       if (action !== DatePickerAndroid.dismissedAction) {
+        let realMonth = month+1
+        console.log(realMonth)
         let newDay = day<10?"0"+day:day;
-        let newMonth = month<10?"0"+month:month;
+        let newMonth = realMonth<10?"0"+realMonth:realMonth;
         let date = newDay + "/" + newMonth + "/" + year
         this.setState({expiration:date})
       }

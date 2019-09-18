@@ -1,4 +1,4 @@
-import { SET_ACCOUNTSTATE, CONNECT, SET_NEW_BET, SET_BET_SELECTED, SET_BET_INACTIVE, SET_WINNER, SET_FRIENDSSTATE, GET_USERBETS, GET_USERFRIENDS, RESET_ACCOUNTSTATE, GET_USERWITNESSOF, UPDATE_WITNESSOF  } from "../Constants/action-types";
+import { SET_ACCOUNTSTATE, CONNECT, SET_NEW_BET, SET_BET_SELECTED, SET_BET_INACTIVE, SET_WINNER, SET_FRIENDSSTATE, GET_USERBETS, GET_USERFRIENDS, RESET_ACCOUNTSTATE, GET_USERWITNESSOF, UPDATE_WITNESSOF, ACCEPT_BET, REPLACE_FRIEND  } from "../Constants/action-types";
 
 const initialState = {
   connectedRedux:false,
@@ -237,7 +237,7 @@ function accountReducer(state = initialState, action) {
       return nextState || state
     break;
 
-
+/*
     case SET_BET_SELECTED:
           newAccountState = state.accountStateRedux
           newAccountState.currentBet = action.bet
@@ -257,14 +257,72 @@ function accountReducer(state = initialState, action) {
           }
         return nextState || state
     break;
+*/
+    case REPLACE_FRIEND:
+        newAccountState = state.accountStateRedux
+        for (var i = 0; i < newAccountState.friends.length; i++) {
+          if(newAccountState.friends[i].id === action.friend.id){
+            newAccountState.friends[i] = action.friend
+          }
+        }
+        if(newAccountState.account.id === action.friend.id){
+          newAccountState.account = action.friend
+        }
+        nextState = {
+          ...state,
+          accountStateRedux: newAccountState
+        }
+      return nextState || state
+    break;
+
 
     case SET_WINNER:
           newAccountState = state.accountStateRedux
-          newAccountState.bets[action.betID].winners.push({id:action.accountID});
+          for (var i = 0; i < newAccountState.witnessOf.length; i++) {
+            if(newAccountState.witnessOf[i].id === action.bet.id){
+              newAccountState.witnessOf[i] = action.bet
+            }
+          }
+          for (var i = 0; i < action.players1.length; i++) {
+            for (var j = 0; j < newAccountState.friends.length; j++) {
+              if(newAccountState.friends[j].id === action.players1[i].id){
+                newAccountState.friends[j] = action.players1[i]
+              }
+            }
+            if(newAccountState.account.id === action.players1[i].id){
+              newAccountState.account = action.players1[i]
+            }
+          }
+          for (var i = 0; i < action.players2.length; i++) {
+            for (var j = 0; j < newAccountState.friends.length; j++) {
+              if(newAccountState.friends[j].id === action.players2[i].id){
+                newAccountState.friends[j] = action.players2[i]
+              }
+            }
+            if(newAccountState.account.id === action.players2[i].id){
+              newAccountState.account = action.players2[i]
+            }
+          }
           nextState = {
             ...state,
             accountStateRedux: newAccountState
           }
+        return nextState || state
+    break;
+
+    case ACCEPT_BET:
+          newAccountState = state.accountStateRedux
+          newAccountState.account = action.newAccount
+          for (var i = 0; i < newAccountState.bets.length; i++) {
+            if(newAccountState.bets[i].id === action.newBet.id){
+              newAccountState.bets[i] = action.newBet
+            }
+          }
+          nextState = {
+            ...state,
+            accountStateRedux: newAccountState
+          }
+          console.log(newAccountState)
         return nextState || state
     break;
 

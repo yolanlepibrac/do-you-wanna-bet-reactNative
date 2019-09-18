@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import { connect } from "react-redux";
+import { withNavigationFocus } from 'react-navigation';
 
 
 import BetItem from "./BetItem"
@@ -13,6 +14,13 @@ function mapDispatchToProps(dispatch) {
 
 class BetJudgeContainerComponent extends React.Component {
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      listOfItems:this.props.accountState.witnessOf,
+     }
+  }
+
 
   getBetDetail = (bet) => {
     this.props.navigation.navigate("BetDetail", {bet:bet})
@@ -22,13 +30,26 @@ class BetJudgeContainerComponent extends React.Component {
     this.props.navigation.navigate("BetNavigation")
   }
 
+  componentDidMount = () => {
+    this.setState({ listOfItems:this.props.accountState.witnessOf });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.setState({ listOfItems:this.props.accountState.witnessOf });
+      //this.setState({ listOfItems : this.props.navigation.getParam('listOBet', this.props.accountState.witnessOf) })
+      //console.log(this.props.navigation.getParam('listOBet', undefined))
+    }
+  }
+
+
 
   render(){
       if(this.props.accountState.witnessOf.length>0){
         return(
           <ScrollView style={{flex:1, flexDirection:"column"}}>
-            {this.props.accountState.witnessOf.map((bet, key)=>{
-              return <BetItem bet={bet} getBetDetail={this.getBetDetail} key={key}></BetItem>
+            {this.state.listOfItems.map((bet, key)=>{
+              return <BetItem bet={bet} getBetDetail={this.getBetDetail} key={key} navigation={this.props.navigation}></BetItem>
             })}
           </ScrollView>
         )
@@ -50,5 +71,5 @@ class BetJudgeContainerComponent extends React.Component {
     }
   }
 
-  const BetJudgeContainer = connect(mapStateToProps, mapDispatchToProps)(BetJudgeContainerComponent);
+  const BetJudgeContainer = connect(mapStateToProps, mapDispatchToProps)(withNavigationFocus(BetJudgeContainerComponent));
   export default BetJudgeContainer;

@@ -1,5 +1,5 @@
 
-import { ADD_CATEGORY, ADD_KEYWORD, RESET_CATEGORY, RESET_KEYWORD, SET_USEREMAIL, SET_ACCOUNTSTATE, CONNECT, DISPLAY_LOADING, SELECT_SHEETMENU, SET_NEW_BET, SET_BET_SELECTED, SET_BET_INACTIVE, SET_WINNER, SET_FRIENDSSTATE, GET_USERBETS, GET_USERFRIENDS, RESET_ACCOUNTSTATE, GET_USERWITNESSOF, UPDATE_WITNESSOF  } from "../Constants/action-types";
+import { ADD_CATEGORY, ADD_KEYWORD, RESET_CATEGORY, RESET_KEYWORD, SET_USEREMAIL, SET_ACCOUNTSTATE, CONNECT, DISPLAY_LOADING, SELECT_SHEETMENU, SET_NEW_BET, SET_BET_SELECTED, SET_BET_INACTIVE, SET_WINNER, SET_FRIENDSSTATE, GET_USERBETS, GET_USERFRIENDS, RESET_ACCOUNTSTATE, GET_USERWITNESSOF, UPDATE_WITNESSOF, ACCEPT_BET, REPLACE_FRIEND  } from "../Constants/action-types";
 
 export function addCategory(category) {
   return { type: ADD_CATEGORY, category }
@@ -69,10 +69,18 @@ export function setBetInactive(betID) {
   return { type: SET_BET_INACTIVE, betID }
 }
 
-export function setWinner(betID, accountID) {
-  return { type: SET_WINNER, betID, accountID }
+export function setWinner(bet, players1, players2) {
+  return { type: SET_WINNER, bet : bet, players1 : players1, players2 : players2 }
 }
 
 export function updtateWitnessOf(bet) {
   return { type: UPDATE_WITNESSOF, bet }
+}
+
+export function acceptBet(newAccount, newBet) {
+  return { type: ACCEPT_BET, newAccount : newAccount, newBet:newBet }
+}
+
+export function replaceFriend(friend) {
+  return { type: REPLACE_FRIEND, friend }
 }
