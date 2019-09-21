@@ -5,6 +5,7 @@ import { StyleSheet, Text, View, ActivityIndicator, Button, TouchableOpacity, Di
 import { connect } from "react-redux";
 
 import API from '../Utils/API';
+import Utils from '../Utils/Utils';
 import Signup from './Signup';
 import Login from './Login';
 
@@ -77,11 +78,13 @@ class NoAccountComponent extends React.Component {
 
 
   componentDidMount = () => {
-
+    //this.props.navigation.navigate("TopNavigation", {email:emailStored})
     AsyncStorage.getItem('email').then((emailStored) => {
       if(emailStored){
-        console.log(emailStored)
-        this.loginAlreadyConnected(emailStored)
+        Utils.loginAlreadyConnected(emailStored, this, () => {
+          this.props.navigation.navigate("TopNavigation", {email:emailStored});
+          this.stayLog(emailStored)
+        })
       }
     })
   }

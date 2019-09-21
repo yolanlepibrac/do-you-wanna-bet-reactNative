@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { connect } from "react-redux";
 import { withNavigationFocus } from 'react-navigation';
 
-
 import BetItem from "./BetItem"
+import Utils from '../Utils/Utils';
+
+//Redux
+import { changeAccountState } from "../Redux/Actions/index";
+import { getUserFriends } from "../Redux/Actions/index";
+import { getUserBets } from "../Redux/Actions/index";
+import { getUserWitnessOf } from "../Redux/Actions/index";
 
 function mapDispatchToProps(dispatch) {
   return {
+    changeAccountState: (userData) => dispatch(changeAccountState(userData)),
+    getUserBets: (tabOfBets) => dispatch(getUserBets(tabOfBets)),
+    getUserFriends: (tabOfFriends) => dispatch(getUserFriends(tabOfFriends)),
+    getUserWitnessOf: (tabOfWitnessOf) => dispatch(getUserWitnessOf(tabOfWitnessOf)),
   };
 };
 
@@ -18,6 +28,7 @@ class BetJudgeContainerComponent extends React.Component {
     super(props)
     this.state = {
       listOfItems:this.props.accountState.witnessOf,
+      refreshing : false,
      }
   }
 
@@ -42,12 +53,20 @@ class BetJudgeContainerComponent extends React.Component {
     }
   }
 
+  onRefresh = () => {
+    this.setState({refreshing:true})
+    Utils.loginAlreadyConnected(this.props.accountState.account.email, this, () => {
+      this.setState({refreshing:false});
+      console.log("refreshed")
+    })
+  }
+
 
 
   render(){
       if(this.props.accountState.witnessOf.length>0){
         return(
-          <ScrollView style={{flex:1, flexDirection:"column"}}>
+          <ScrollView style={{flex:1, flexDirection:"column"}} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh}/>}>
             {this.state.listOfItems.map((bet, key)=>{
               return <BetItem bet={bet} getBetDetail={this.getBetDetail} key={key} navigation={this.props.navigation}></BetItem>
             })}

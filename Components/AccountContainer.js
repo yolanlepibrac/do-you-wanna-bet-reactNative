@@ -7,7 +7,6 @@ import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { ProgressCircle }  from 'react-native-svg-charts'
 
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 

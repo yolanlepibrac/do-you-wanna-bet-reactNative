@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, TextInput, Platform, DatePickerIOS, DatePickerAndroid, Button } from 'react-native';
 import { connect } from "react-redux";
 import { withNavigationFocus } from 'react-navigation';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 import ChooseItem from "./ChooseItem"
 

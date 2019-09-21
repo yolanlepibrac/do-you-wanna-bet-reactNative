@@ -1,12 +1,19 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, ScrollView, TextInput, Alert, RefreshControl } from 'react-native';
 import { connect } from "react-redux";
 
 import FriendItemToggle from './FriendItemToggle'
+import Utils from '../Utils/Utils';
 import API from '../Utils/API';
 import { setFriendsState } from "../Redux/Actions/index";
 import { withNavigationFocus } from 'react-navigation';
+
+//Redux
+import { changeAccountState } from "../Redux/Actions/index";
+import { getUserFriends } from "../Redux/Actions/index";
+import { getUserBets } from "../Redux/Actions/index";
+import { getUserWitnessOf } from "../Redux/Actions/index";
 
 const selectedColor = "rgba(123,250,155,1)";
 const nonSelectedColor = "rgba(240,240,240,1)";
@@ -14,6 +21,10 @@ const nonSelectedColor = "rgba(240,240,240,1)";
 function mapDispatchToProps(dispatch) {
   return {
     setFriendsState: (tabOfFriends) => dispatch(setFriendsState(tabOfFriends)),
+    changeAccountState: (userData) => dispatch(changeAccountState(userData)),
+    getUserBets: (tabOfBets) => dispatch(getUserBets(tabOfBets)),
+    getUserFriends: (tabOfFriends) => dispatch(getUserFriends(tabOfFriends)),
+    getUserWitnessOf: (tabOfWitnessOf) => dispatch(getUserWitnessOf(tabOfWitnessOf)),
   };
 };
 
@@ -29,7 +40,8 @@ class FriendsContainerComponent extends React.Component {
       searchActive:false,
       displayLoading:false,
       searchMade : false,
-      friends : this.props.accountState.friends
+      friends : this.props.accountState.friends,
+      refreshing:false,
      }
   }
 
@@ -128,6 +140,20 @@ class FriendsContainerComponent extends React.Component {
     this.props.navigation.navigate("FriendDetail", {friend:friend})
   }
 
+  onRefresh = () => {
+    this.setState({refreshing:true})
+    Utils.loginAlreadyConnected(this.props.accountState.account.email, this, () => {
+      this.setState({refreshing:false});
+      console.log("refreshed")
+    })
+  }
+
+  onRefreshSearch = () => {
+    this.setState({refreshing:true})
+    this.submitResearch()
+    this.setState({refreshing:false})
+  }
+
   render(){
     return(
       <View style={{flexDirection:"column", justifyContent:"flex-start", alignItems:"center", flex:1,}}>
@@ -160,7 +186,7 @@ class FriendsContainerComponent extends React.Component {
                 </View>
                 <View style={{flexDirection:"column", flex:1, width:"100%"}}>
                   {this.state.tabOfFriendObject.length>0 ?
-                    <ScrollView style={{flex:1, flexDirection:"column"}}>
+                    <ScrollView style={{flex:1, flexDirection:"column"}} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefreshSearch}/>}>
                       {this.state.tabOfFriendObject.map((friend, key)=><FriendItemToggle friend={friend} key={key} onClick={this.toggleFriend} alreadyFriend={this.state.tabOfIdOfFriendsAreadyFriends.map((friend)=>(friend.id)).includes(friend.id)} navigation={this.props.navigation} openFriend={this.openFriend}/>)}
                     </ScrollView>
                     :
@@ -172,7 +198,7 @@ class FriendsContainerComponent extends React.Component {
               </View>
               :
               <View style={{flex:1, flexDirection:"row"}}>
-                <ScrollView style={{flex:1, flexDirection:"column"}}>
+                <ScrollView style={{flex:1, flexDirection:"column"}} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh}/>}>
                   {this.state.friends.map((friend, key)=><FriendItemToggle friend={friend} key={key} onClick={this.toggleFriend} alreadyFriend={this.state.tabOfIdOfFriendsAreadyFriends.map((friend)=>(friend.id)).includes(friend.id)} navigation={this.props.navigation}
                   openFriend={this.openFriend}/>)}
                 </ScrollView>
