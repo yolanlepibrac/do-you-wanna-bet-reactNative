@@ -37,7 +37,7 @@ class FriendsContainerComponent extends React.Component {
       searchValueSend : "",
       tabOfFriendObject:[],
       tabOfIdOfFriendsAreadyFriends:this.props.accountState.friends,
-      searchActive:false,
+      searchActive:true,
       displayLoading:false,
       searchMade : false,
       friends : this.props.accountState.friends,
@@ -163,7 +163,7 @@ class FriendsContainerComponent extends React.Component {
           </View>
           :
           <View style={{flex:1, flexDirection:"column", alignItems:"center", width:"100%"}}>
-            <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center", height:70}}>
+            <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center", height:50, marginTop:10}}>
               <TouchableOpacity
               onPress={() => this.displaySearch()}
               style={{backgroundColor:this.state.searchActive?"rgba(120,220,120,1)":"rgba(240,240,240,1)", width:130, height:40, borderBottomWidth:1, borderLeftWidth:1, borderTopWidth:1,borderBottomLeftRadius:10, borderTopLeftRadius:10, alignItems:"center", justifyContent:"center", borderColor: this.state.searchActive?"rgba(100,220,100,1)":"rgba(200,200,200,1)"}}>
@@ -177,8 +177,8 @@ class FriendsContainerComponent extends React.Component {
             </View>
             {this.state.searchActive ?
               <View style={{flex:1, flexDirection:"column", width:"100%", alignItems:"center"}}>
-                <View style={{height:40,borderWidth:1, padding:2.5, margin:5, flexDirection:"row", alignItems:"center", width:260}}>
-                  <TextInput style={{height:35,flex:1,flexDirection:"row", justifyContent:"flex-end"}} onChangeText={text=>this.onChangeSearchValue(text)} value={this.state.searchValue} onSubmitEditing={this.submitResearch}>
+                <View style={{height:40, borderRadius:10, borderColor:"rgba(200,200,200,1)", borderWidth:1, padding:2.5, margin:5, flexDirection:"row", alignItems:"center", width:260, marginBottom:10}}>
+                  <TextInput style={{height:35,flex:1, padding:0, margin:0, flexDirection:"row", justifyContent:"flex-end"}} onChangeText={text=>this.onChangeSearchValue(text)} value={this.state.searchValue} onSubmitEditing={this.submitResearch}>
                   </TextInput>
                   <TouchableOpacity onPress={this.submitResearch} style={{positon:"absolute", top:0, right:0, height:40, justifyContent:"center", alignItems:"center"}}>
                     <Text>SEARCH</Text>

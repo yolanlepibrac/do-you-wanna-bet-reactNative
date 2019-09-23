@@ -37,8 +37,8 @@ class BetMadeContainerComponent extends React.Component {
   }
 
   makeFirstBet = () => {
-    //this.props.navigation.navigate("BetNavigation")
-    console.log(this.props.accountState.bets)
+    this.props.navigation.navigate("BetNavigation")
+    //console.log(this.props.accountState.bets)
     this.setState({bets:this.props.accountState.bets})
   }
 

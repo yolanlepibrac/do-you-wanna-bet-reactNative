@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, TextInput, Platform, DatePickerIOS, DatePickerAndroid, Button } from 'react-native';
 import { connect } from "react-redux";
 import { withNavigationFocus } from 'react-navigation';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import ChooseItem from "./ChooseItem"
 
@@ -109,42 +110,47 @@ class MyBetContainerComponent extends React.Component {
 
   render(){
     return(
-      <View style={{flex:1, flexDirection:"column", justifyContent:"flex-start", alignItems:"center", backgroundColor:"rgba(156, 255, 169,1)"}}>
-        <View style={{flex:1, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
-          <ChooseItem placeholder={"What ?"} active={this.state.title.length>0} delete={this.resetTitle}>
-            <View style={{flex:1, paddingLeft:20, paddingRight:20}}>
-              <TextInput style={{borderWidth:0.5, borderColor:"rgba(100,100,100,0.4)", borderRadius:5, paddingLeft:5}} onChangeText={text => this.onChangeTitle(text)} value={this.state.title} onSubmitEditing={() => {this.price.focus(); }} placeholder = "What is you bet"/>
-            </View>
-          </ChooseItem>
+
+        <View style={{flex:1, flexDirection:"column", justifyContent:"flex-start", alignItems:"center", backgroundColor:"rgba(156, 255, 169,1)"}}>
+          <View style={{height:160, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
+            <ChooseItem placeholder={"What ?"} active={this.state.title.length>0} delete={this.resetTitle}>
+              <KeyboardAwareScrollView>
+                <View style={{flex:1, paddingLeft:20, paddingRight:20}}>
+                  <TextInput style={{borderWidth:0, borderColor:"rgba(100,100,100,0.4)", borderRadius:5, paddingLeft:5}} onChangeText={text => this.onChangeTitle(text)} value={this.state.title} onSubmitEditing={() => {this.price.focus(); }} placeholder = "What is you bet"/>
+                </View>
+              </KeyboardAwareScrollView>
+            </ChooseItem>
+          </View>
+          <View style={{height:160, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
+            <ChooseItem placeholder={"Price ?"} active={this.state.issue.length>0} delete={this.resetIssue}>
+              <KeyboardAwareScrollView>
+                <View style={{flex:1, paddingLeft:20, paddingRight:20}}>
+                  <TextInput style={{borderWidth:0, borderColor:"rgba(100,100,100,0.4)", borderRadius:5, paddingLeft:5}} onChangeText={text => this.onChangeIssue(text)} value={this.state.issue} ref={(input) => { this.price = input; }} placeholder = "What do you win"/>
+                </View>
+              </KeyboardAwareScrollView>
+            </ChooseItem>
+          </View>
+          <View style={{height:160, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
+            <ChooseItem placeholder={"When ?"} active={this.state.expiration!==undefined && this.state.expiration!==""} delete={this.resetDate}>
+              {Platform.OS === 'ios' ?
+                <DatePickerIOS  date={this.state.date} onDateChange={this.setDate}/>
+                :
+                <TouchableOpacity onPress={this.setDateAndroid} title="Pick date" style={{flex:1, paddingLeft:20, paddingRight:20, height:50, justifyContent:"center"}}>
+                  {this.state.expiration?
+                    <View><Text>{this.state.expiration}</Text></View>
+                    :
+                    <View><Text style={{color:"grey"}}>Pick the date</Text></View>
+                  }
+                </TouchableOpacity>
+              }
+            </ChooseItem>
+          </View>
+          <View style={{height:160, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
+            <TouchableOpacity onPress={() => this.navigate()}  style={{backgroundColor:this.state.title.length>0 && this.state.issue.length>0 ? "rgba(110,219,124,1)":"rgba(200,200,200,1)", borderWidth:this.state.title.length>0 && this.state.issue.length>0 ?1:0, borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
+              <Text style={{color:"white", fontWeight:"bold"}}>VALIDATE</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={{flex:1, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
-          <ChooseItem placeholder={"Price ?"} active={this.state.issue.length>0} delete={this.resetIssue}>
-            <View style={{flex:1, paddingLeft:20, paddingRight:20}}>
-              <TextInput style={{borderWidth:0.5, borderColor:"rgba(100,100,100,0.4)", borderRadius:5, paddingLeft:5}} onChangeText={text => this.onChangeIssue(text)} value={this.state.issue} ref={(input) => { this.price = input; }} placeholder = "What do you win"/>
-            </View>
-          </ChooseItem>
-        </View>
-        <View style={{flex:1, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
-          <ChooseItem placeholder={"When ?"} active={this.state.expiration!==undefined && this.state.expiration!==""} delete={this.resetDate}>
-            {Platform.OS === 'ios' ?
-              <DatePickerIOS  date={this.state.date} onDateChange={this.setDate}/>
-              :
-              <TouchableOpacity onPress={this.setDateAndroid} title="Pick date" style={{flex:1, paddingLeft:20, paddingRight:20, height:50, justifyContent:"center"}}>
-                {this.state.expiration?
-                  <View><Text>{this.state.expiration}</Text></View>
-                  :
-                  <View><Text style={{color:"grey"}}>Pick the date</Text></View>
-                }
-              </TouchableOpacity>
-            }
-          </ChooseItem>
-        </View>
-        <View style={{flex:1, flexDirection:"row", justifyContent:"flex-start", alignItems:"center"}}>
-          <TouchableOpacity onPress={() => this.navigate()}  style={{backgroundColor:this.state.title.length>0 && this.state.issue.length>0 ? "rgba(110,219,124,1)":"rgba(200,200,200,1)", borderWidth:this.state.title.length>0 && this.state.issue.length>0 ?1:0, borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
-            <Text style={{color:"white", fontWeight:"bold"}}>VALIDATE</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     )
 
   }

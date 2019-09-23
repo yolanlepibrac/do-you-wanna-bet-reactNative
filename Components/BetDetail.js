@@ -160,7 +160,7 @@ class BetDetailComponent extends React.Component {
 
   tabOfPlayer = (chooseAllowed) => {
     return (
-      <View style={{flex:1, flexDirection:"row", justifyContent:"space-between", padding:10, height:300}}>
+      <View style={{flex:1, flexDirection:"row", justifyContent:"space-between", padding:10}}>
         <View style={{flex:1,  flexDirection:"column", marginRight:5,}}>
           {chooseAllowed ?
             <TouchableOpacity onPress={this.setWin} style={{height:40, width:"100%", backgroundColor:"rgba(110,219,124,1)", borderRadius:3, justifyContent:"center", alignItems:"center"}}>
@@ -169,7 +169,7 @@ class BetDetailComponent extends React.Component {
             :
             null
           }
-          <ScrollView style={{flex:1,  flexDirection:"column", backgroundColor:this.state.bet.current||this.state.bet.isPassed?"rgba(245,245,245,1)":this.state.bet.win?"rgba(170,245,170,0.3)":"rgba(245,170,170,0.3)" }}
+          <ScrollView nestedScrollEnabled={true} style={{flex:1, borderRadius:25, flexDirection:"column", backgroundColor:this.state.bet.current||this.state.bet.isPassed?"rgba(245,245,245,1)":this.state.bet.win?"rgba(170,245,170,0.3)":"rgba(245,170,170,0.3)" }}
           onClick={this.setWin}>
             {this.state.bet.playersDetail.players1.map((player, key)=>
                 <View style={{flexDirection:"row", width:"100%", padding:3, justifyContent:"space-between", alignItems:"center", overflow:"hidden"}} key={key}>
@@ -193,7 +193,7 @@ class BetDetailComponent extends React.Component {
               :
               null
             }
-            <ScrollView style={{flex:1, flexDirection:"column",  backgroundColor:this.state.bet.current||this.state.bet.isPassed?"rgba(245,245,245,1)":this.state.bet.win?"rgba(245,170,170,0.3)":"rgba(170,245,170,0.3)"}}
+            <ScrollView nestedScrollEnabled={true} style={{flex:1, borderRadius:25, flexDirection:"column",  backgroundColor:this.state.bet.current||this.state.bet.isPassed?"rgba(245,245,245,1)":this.state.bet.win?"rgba(245,170,170,0.3)":"rgba(170,245,170,0.3)"}}
             onClick={this.setLoose}>
               {this.state.bet.playersDetail.players2.map((player, key)=>
                 <View key={key}>
@@ -225,16 +225,26 @@ class BetDetailComponent extends React.Component {
           return <ActivityIndicator color={"green"} size={"large"}></ActivityIndicator>
         }else{
         return(
-          <View style={{flex:1}}>
+        <View style={{flex:1}}>
+          <ScrollView nestedScrollEnabled={true} style={{flex:1}}>
             {this.state.bet !== undefined ?
             <View style={{flex:1, paddingLeft:20, paddingRight:20, flexDirection:"column", alignItems:"center"}}>
               <View style={{flex:0.75, fontSize:17, color:"black",  flexDirection:"column", alignItems:"center", justifyContent:"center", paddingBottom:5, paddingTop:5}}>
-                <Text style={{fontSize:17}}>{this.state.bet.title}</Text>
-                <Text style={{color:"rgba(155,155,155,1)", fontSize:15}}>{this.state.bet.issue}</Text>
+                <View style={{flexDirection:"column", alignItems:"flex-start", justifyContent:"center"}}>
+                  <Text style={{fontWeight:"bold", color:"black"}}>Title</Text>
+                  <Text style={{fontSize:17, textAlign:"justify"}}>{this.state.bet.title}</Text>
+                </View>
+                <View style={{flexDirection:"column", alignItems:"flex-start", justifyContent:"center", marginTop:20}}>
+                  <Text style={{fontWeight:"bold", color:"black"}}>Price</Text>
+                  <Text style={{color:"rgba(155,155,155,1)", fontSize:15, textAlign:"justify"}}>{this.state.bet.issue}</Text>
+                </View>
               </View>
+
+
 
               <View style={{flex:1,flexDirection:"row", justifyContent:"space-between", alignItems:"flex-start", marginTop:20, width:"100%"}}>
                 <View style={{ flexDirection:"column", justifyContent:"space-between", alignItems:"flex-start"}}>
+                  <Text style={{fontWeight:"bold", color:"black"}}>Details</Text>
                   <Text style={{height:20,  alignItems:"center"}}>{"creation : " + this.state.bet.creation}</Text>
                   <Text style={{height:20,alignItems:"center"}}>{"expiration : " + this.state.bet.expiration}</Text>
                   {this.state.bet.current&&!this.state.bet.isPassed ?
@@ -243,21 +253,39 @@ class BetDetailComponent extends React.Component {
                     <Text style={{height:20, alignItems:"center"}}>status : finished</Text>
                   }
                 </View>
+
                 {this.state.bet.playersDetail.witness ?
-                  <View style={{flexDirection:"column", justifyContent:"space-between", alignItems:"center", width:70, backgroundSize:"cover"}}>
+                  <View style={{flexDirection:"column", justifyContent:"space-between", alignItems:"center"}}>
+                    <View style={{flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+                      <Text style={{fontWeight:"bold", color:"black", paddingRight:10}}>Judge</Text>
+                      <Text style={{alignItems:"center"}}>{this.state.bet.playersDetail.witness.user.userName}</Text>
+                    </View>
                     {this.state.bet.playersDetail.witness.user.imageProfil ?
                       <Image source={{uri:this.state.bet.playersDetail.witness.user.imageProfil}} style={{borderRadius:35, width:70, height:70,}}/>
                       :
                       <Image source={require('../assets/images/connectBig.png')} style={{borderRadius:35, width:70, height:70,}}/>
                     }
-                    <Text style={{height:20, alignItems:"center"}}>{"Judge : " + this.state.bet.playersDetail.witness.user.userName}</Text>
                   </View>
                   :null
                 }
               </View>
 
+              {(this.state.judingAllow && this.state.player1Exists && this.state.player2Exists) ?
+                <View style={{flex:1,}}>
+                  {!this.state.bet.isPassed ?
+                    <TouchableOpacity onPress={this.toggleChooseWinner} style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2, marginTop:20 }}>
+                      <Text style={{color:"white", fontWeight:"bold"}}>CHOOSE WINNER</Text>
+                    </TouchableOpacity>
+                    :
+                    <Text>You cannot judge, the limit date is passed
+                    </Text>
+                  }
+                </View>
+                :null
+              }
+
               <View style={{flex:4, flexDirection:"column", alignItems:"center", marginTop:30}}>
-                <Text>PLAYERS</Text>
+                <Text style={{fontWeight:"bold", color:"black"}}>Players</Text>
                 <Text style={{width:50, height:50, position:"absolute", top:"45%", left:"45%", fontSize:30, color:"white", textShadowColor:'rgba(0,0,0,0.75)',textShadowOffset: {width: -1, height: 1},textShadowRadius: 10, zIndex:100}}>VS
                 </Text>
                 {this.tabOfPlayer(false)}
@@ -288,27 +316,15 @@ class BetDetailComponent extends React.Component {
                 </View>
                 :null
               }
-              {(this.state.judingAllow && this.state.player1Exists && this.state.player2Exists) ?
-                <View style={{flex:1,}}>
-                  {!this.state.bet.isPassed ?
-                    <TouchableOpacity onPress={this.toggleChooseWinner} style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
-                      <Text style={{color:"white", fontWeight:"bold"}}>CHOOSE WINNER</Text>
-                    </TouchableOpacity>
-                    :
-                    <Text>You cannot judge, the limit date is passed
-                    </Text>
-                  }
 
-
-                </View>
-                :null
-              }
             </View>
             :null
           }
+
+          </ScrollView>
           {this.state.chooseWinner ?
-            <View style={{position:"absolute", top:0, width:0, flex:1, width:"100%", height:"100%", backgroundColor:"rgba(255,255,255,0.95)", zIndex:101}}>
-              <View style={{position:"absolute", top:50, left:"10%", width:"80%", height:400, alignItems:"center", flexDirection:"column", zIndex:102}}>
+            <View style={{position:"absolute", top:0, width:0,  width:"100%", height:"100%", backgroundColor:"rgba(255,255,255,0.95)", zIndex:101}}>
+              <View style={{position:"absolute", top:50,  left:"10%", width:"80%", height:400, alignItems:"center", flexDirection:"column", zIndex:102}}>
                 {this.tabOfPlayer(true)}
                 <TouchableOpacity onPress={this.validateWinner} style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
                   <Text style={{color:"white", fontWeight:"bold"}}>VALIDATE</Text>

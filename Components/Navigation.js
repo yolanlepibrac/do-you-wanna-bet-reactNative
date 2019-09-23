@@ -193,6 +193,7 @@ const TopNavigation = createMaterialTopTabNavigator(
       indicatorStyle: {
         borderBottomColor: '#000000',
         borderBottomWidth: 0,
+        backgroundColor: 'rgba(0,125,33,1)',
       },
     },
   }
@@ -219,7 +220,7 @@ const Navigation = createStackNavigator({
       headerMode : "none",
       headerStyle: {
         height:0,
-        backgroundColor: '#003689',
+        backgroundColor: '#000000',
       },
       headerTintColor: '#FFFFFF',
     }),

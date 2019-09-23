@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, ScrollView, Image, Button, AsyncStorage , TextInput, Platform, DatePickerIOS, DatePickerAndroid, Alert} from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, ScrollView, Image, Button, TextInput, Platform, DatePickerIOS, DatePickerAndroid, Alert} from 'react-native';
 import { connect } from "react-redux";
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { ProgressCircle }  from 'react-native-svg-charts'
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 
@@ -51,7 +53,9 @@ class AccountContainerComponent extends React.Component {
       account:this.props.accountState.account,
       toggleChangeAccountState:false,
       imageProfil: this.props.accountState.account.imageProfil,
-      //birth : this.props.accountState.account.birth ? this.props.accountState.account.birth :undefined,
+      userName:this.props.accountState.account.userName,
+      email:this.props.accountState.account.email,
+      phone:this.props.accountState.account.phone,
       fill:10,
       oldPassword : "",
       oldCPassword : "",
@@ -135,9 +139,6 @@ class AccountContainerComponent extends React.Component {
         const response = await ImageManipulator.manipulateAsync(result.uri, [], { base64: true })
         let image64 = "data:image/jpeg;base64,"+ response.base64;
         this.setState({ imageProfil:image64 });
-        let newAccount = this.state.account
-        newAccount.imageProfil = image64
-        this.setState({ account : newAccount });
       }
     }
   };
@@ -178,9 +179,13 @@ class AccountContainerComponent extends React.Component {
   }
 
 
-  setToDatabase = (account) => {
+  setToDatabase = () => {
     this.toggleChangeAccountState();
-    console.log(account)
+    let account = this.state.account
+    account.email = this.state.email
+    account.userName = this.state.userName.toLowerCase()
+    account.phone = this.state.phone
+    account.imageProfil = this.state.imageProfil
     API.setUserInfo(account, this.props.accountState.account.id).then((data) => {
       this.props.changeAccountState(account);
       this.setState({account:account})
@@ -189,14 +194,25 @@ class AccountContainerComponent extends React.Component {
   }
 
   onInputChange = (key, value) => {
-    var newAccount = this.state.account
-    newAccount[key] = value
-    this.setState({account : newAccount})
+    if(key === "userName"){
+      value = value.toLowerCase()
+    }
+    this.setState({[key] : value})
   }
 
   toggleChangeAccountState = () => {
     this.setState({
       toggleChangeAccountState : !this.state.toggleChangeAccountState
+    })
+  }
+
+  cancelChangeAccount = () => {
+    this.setState({
+      toggleChangeAccountState:false,
+      imageProfil: this.props.accountState.account.imageProfil,
+      userName:this.props.accountState.account.userName,
+      email:this.props.accountState.account.email,
+      phone:this.props.accountState.account.phone,
     })
   }
 
@@ -302,28 +318,28 @@ class AccountContainerComponent extends React.Component {
                 <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Old Password
                 </Text>
                 <View style={{flexDirection:"row", width:"100%",  height:50}}>
-                  <TextInput onChangeText={text => this.onChangeOldPassword(text)} value={this.state.oldPassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureOldPassword}>
+                  <TextInput onChangeText={text => this.onChangeOldPassword(text)} value={this.state.oldPassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, padding:0, margin:0, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureOldPassword}>
                   </TextInput >
                   <TouchableOpacity onPress={this.toggleSecureOldPassword} style={{position:"absolute", width:30, height:35, top:0, right:20, }}>
-                    <Image style={{ width:35, height:35}} source={require('../assets/images/oeil.png')}/>
+                    <Image style={{ width:35, height:35}} source={this.state.secureOldPassword?require('../assets/images/oeil.png'):require('../assets/images/oeilSelect.png')}/>
                   </TouchableOpacity>
                 </View>
                 <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Confirm Old Password
                 </Text>
                 <View style={{flexDirection:"row", width:"100%",  height:50}}>
-                  <TextInput onChangeText={text => this.onChangeOldCPassword(text)} value={this.state.oldCPassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureOldCPassword}>
+                  <TextInput onChangeText={text => this.onChangeOldCPassword(text)} value={this.state.oldCPassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, padding:0, margin:0, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureOldCPassword}>
                   </TextInput >
                   <TouchableOpacity onPress={this.toggleSecureOldCPassword} style={{position:"absolute", width:30, height:35, top:0, right:20, }}>
-                    <Image style={{ width:35, height:35,}} source={require('../assets/images/oeil.png')}/>
+                    <Image style={{ width:35, height:35,}} source={this.state.secureOldCPassword?require('../assets/images/oeil.png'):require('../assets/images/oeilSelect.png')}/>
                   </TouchableOpacity>
                 </View>
                 <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>New Password
                 </Text>
                 <View style={{flexDirection:"row", width:"100%",  height:50}}>
-                  <TextInput onChangeText={text => this.onChangeNewPassword(text)} value={this.state.newPassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureNewPassword}>
+                  <TextInput onChangeText={text => this.onChangeNewPassword(text)} value={this.state.newPassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, padding:0, margin:0, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureNewPassword}>
                   </TextInput >
                   <TouchableOpacity onPress={this.toggleSecureNewPassword} style={{position:"absolute", width:30, height:35, top:0, right:20, }}>
-                    <Image style={{ width:35, height:35,}} source={require('../assets/images/oeil.png')}/>
+                    <Image style={{ width:35, height:35,}} source={this.state.secureNewPassword?require('../assets/images/oeil.png'):require('../assets/images/oeilSelect.png')}/>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={this.ValidateChangePassword} style={{backgroundColor:"rgba(35,200,35,1)", marginTop:5, marginBottom:5, borderRadius:2}}>
@@ -350,7 +366,7 @@ class AccountContainerComponent extends React.Component {
                       <Text style={{color:"grey"}}>PROFILE</Text>
                       {this.state.toggleChangeAccountState?
 
-                        <TouchableOpacity onPress={this.toggleChangeAccountState} style={{width:75, height:25, borderRadius:2, fontSize:15, backgroundColor:"rgba(200,200,200,1)",justifyContent:"center", alignItems:"center" }}>
+                        <TouchableOpacity onPress={this.cancelChangeAccount} style={{width:75, height:25, borderRadius:2, fontSize:15, backgroundColor:"rgba(200,200,200,1)",justifyContent:"center", alignItems:"center" }}>
                           <Text style={{color:"white", fontWeight:"bold"}}>CANCEL</Text>
                         </TouchableOpacity>
                         :
@@ -387,9 +403,9 @@ class AccountContainerComponent extends React.Component {
                           </TouchableOpacity>
                       </View>
                       <View style={{flex:1,  flexDirection: 'column', alignItems:"flex-start"}}>
-                        <ItemEditProfile placeHolder={"Name"} value={this.state.account.userName} heightSize={1} onChange={this.onInputChange} keyForState={"userName"} changePossible={this.state.toggleChangeAccountState} autoCompleteType="name"/>
-                        <ItemEditProfile placeHolder={"Email"} value={this.state.account.email} heightSize={1} onChange={this.onInputChange} keyForState={"email"} changePossible={this.state.toggleChangeAccountState} autoCompleteType="email"/>
-                        <ItemEditProfile placeHolder={"Phone"} value={ this.state.account.phone} heightSize={1} onChange={this.onInputChange} keyForState={"phone"} changePossible={this.state.toggleChangeAccountState} autoCompleteType="tel"/>
+                        <ItemEditProfile placeHolder={"Name"} value={this.state.userName} heightSize={1} onChange={this.onInputChange} keyForState={"userName"} changePossible={this.state.toggleChangeAccountState} autoCompleteType="name" autoCapitalize = 'none'/>
+                        <ItemEditProfile placeHolder={"Email"} value={this.state.email} heightSize={1} onChange={this.onInputChange} keyForState={"email"} changePossible={this.state.toggleChangeAccountState} autoCompleteType="email" autoCapitalize = 'none'/>
+                        <ItemEditProfile placeHolder={"Phone"} value={ this.state.phone} heightSize={1} onChange={this.onInputChange} keyForState={"phone"} changePossible={this.state.toggleChangeAccountState} autoCompleteType="tel" autoCapitalize = 'none'/>
                       </View>
 
                     </View>

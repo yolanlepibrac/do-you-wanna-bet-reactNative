@@ -32,7 +32,7 @@ class ItemEditProfileComponent extends React.Component {
         <Text style={{width: "100%", textAlign:"left", fontSize:13}}>{this.props.placeHolder}</Text>
         <View style={{width: "100%", flexDirection: 'column',  marginBottom:10, marginTop:5, fontSize:15, justifyContent:"flex-start"}}>
           {this.props.changePossible ?
-            <TextInput autoCompleteType={this.props.autoCompleteType} type="text" style={{ height:30*this.props.heightSize, textAlign:"left", display: 'flex', flexDirection: 'column', justifyContent:"center", borderRadius:3,  color:"rgba(50,50,50,1)", borderWidth:1, borderStyle:"solid", borderColor:"rgba(100,100,100,1)",width:"100%", backgroundColor:"rgba(245,245,245,1)", paddingLeft:10}} value={this.state.value} onChangeText={(text) => this.onChange(text)}/>
+            <TextInput autoCompleteType={this.props.autoCompleteType} type="text" style={{ height:30*this.props.heightSize, textAlign:"left", display: 'flex', flexDirection: 'column', justifyContent:"center", borderRadius:3,  color:"rgba(50,50,50,1)", borderWidth:1, borderStyle:"solid", borderColor:"rgba(100,100,100,1)",width:"100%", backgroundColor:"rgba(245,245,245,1)", padding:0, margin:0, paddingLeft:10}} value={this.state.value} onChangeText={(text) => this.onChange(text)} autoCapitalize={this.props.autoCapitalize}/>
             :
             <View  style={{width:"100%", height:30*this.props.heightSize, textAlign:"left", display: 'flex', flexDirection: 'column', justifyContent:"center", borderRadius:3,  color:"black", borderWidth:0, borderStyle:"solid", borderColor:"rgba(150,150,150,1)",width:"100%", backgroundColor:"rgba(235,235,235,1)", paddingLeft:10}}>
               <Text style={{color:"rgba(150,150,150,1)"}}>{this.props.value}

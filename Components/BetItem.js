@@ -219,7 +219,7 @@ class BetItemComponent extends React.Component {
       }else{
         let winOrLooseSet = !this.state.bet.current && this.state.iAccepted===true && !this.state.imTheWitness
         return(
-          <TouchableOpacity onPress={this.onClick} style={{flexDirection:"row",  alignItems:"flex-start", height:100, flex:1, alignItems:"center", backgroundColor:winOrLooseSet&&this.state.iWon?"rgba(0,200,0,0.1)":winOrLooseSet&&!this.state.iWon?"rgba(200,0,0,0.1)":this.state.bet.current&&!this.state.isPassed?"rgba(200,200,200,0)":"rgba(200,200,200,0.3)"}}>
+          <TouchableOpacity onPress={this.onClick} style={{flexDirection:"row",  alignItems:"flex-start", height:100, flex:1, alignItems:"center", backgroundColor:winOrLooseSet&&this.state.iWon?"rgba(0,200,0,0.1)":winOrLooseSet&&!this.state.iWon?"rgba(200,0,0,0.1)":this.state.bet.current&&!this.state.isPassed&&this.state.iAccepted!==false?"rgba(200,200,200,0)":"rgba(200,200,200,0.3)"}}>
             <View style={{width:100, height:100}}>
               {this.state.players1.length>0 ?
                   <View style={{width:100, height:100, position:"absolute", top:5, left:5}}>
@@ -246,12 +246,12 @@ class BetItemComponent extends React.Component {
                 </View>
               }
             </View>
-            <View style={{flex:1, flexDirection:"column", alignItems:"flex-start",justifyContent:"center"}}>
-              <View style={{}}>
-                <Text style={{fontSize:15, color:this.state.bet.current&&!this.state.isPassed&&this.state.iAccepted!==false?"black":"rgba(187,187,187,1)"}}>{this.state.bet.title}</Text>
+            <View style={{flex:1, flexDirection:"column", alignItems:"flex-start",justifyContent:"center", marginLeft:10}}>
+              <View style={{paddingRight:(this.state.iAccepted===true&&this.state.bet.current&&!this.state.isPassed)||this.state.imTheWitness?50:120}}>
+                <Text numberOfLines={1} ellipsizeMode={"tail"} style={{fontSize:15, color:this.state.bet.current&&!this.state.isPassed&&this.state.iAccepted!==false?"black":"rgba(187,187,187,1)"}}>{this.state.bet.title}</Text>
               </View>
-              <View>
-                <Text style={{fontSize:13, color:this.state.bet.current&&!this.state.isPassed&&this.state.iAccepted!==false?"black":"rgba(187,187,187,1)"}}>{this.state.bet.issue}</Text>
+              <View style={{paddingRight:(this.state.iAccepted===true&&this.state.bet.current&&!this.state.isPassed)||this.state.imTheWitness?50:120}}>
+                <Text numberOfLines={1} ellipsizeMode={"tail"} style={{fontSize:13, color:this.state.bet.current&&!this.state.isPassed&&this.state.iAccepted!==false?"black":"rgba(187,187,187,1)"}}>{this.state.bet.issue}</Text>
               </View>
               <View>
                 <Text style={{fontSize:10, color:this.state.bet.current&&!this.state.isPassed&&this.state.iAccepted!==false?"black":"rgba(187,187,187,1)"}}>{"create : "+this.state.bet.creation}</Text>

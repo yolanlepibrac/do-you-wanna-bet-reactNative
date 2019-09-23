@@ -89,28 +89,28 @@ export default class Signup extends React.Component {
               </View>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Full name
               </Text>
-              <TextInput onChangeText={text => this.onChangeUserName(text)} value={this.state.userName} autoCompleteType={"username"} autoFocus={true} clearButtonMode={'while-editing'} style={{borderWidth:1, height:35, paddingLeft:10}}>
+              <TextInput onChangeText={text => this.onChangeUserName(text)} value={this.state.userName} autoCompleteType={"username"} autoFocus={true} clearButtonMode={'while-editing'} style={{borderWidth:1, height:35, padding:0, margin:0, paddingLeft:10}}>
               </TextInput>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Email
               </Text>
-              <TextInput onChangeText={text => this.onChangeEmail(text)} value={this.state.email} autoCompleteType={"email"} autoFocus={true} clearButtonMode={'while-editing'} style={{borderWidth:1, height:35, paddingLeft:10}}>
+              <TextInput onChangeText={text => this.onChangeEmail(text)} value={this.state.email} autoCompleteType={"email"} clearButtonMode={'while-editing'} style={{borderWidth:1, height:35, padding:0, margin:0, paddingLeft:10}}>
               </TextInput>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Password
               </Text>
               <View style={{flexDirection:"row", width:"100%", flex:1}}>
-                <TextInput onChangeText={text => this.onChangePassword(text)} value={this.state.password} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.securePassword}>
+                <TextInput onChangeText={text => this.onChangePassword(text)} value={this.state.password} autoCompleteType={"password"}  style={{borderWidth:1, height:35, padding:0, margin:0, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.securePassword}>
                 </TextInput >
                 <TouchableOpacity onPress={this.toggleSecurePassword} style={{position:"absolute", width:30, height:35, top:0, right:20, }}>
-                  <Image style={{ width:35, height:35}} source={require('../assets/images/oeil.png')}/>
+                  <Image style={{ width:35, height:35}} source={this.state.securePassword?require('../assets/images/oeil.png'):require('../assets/images/oeilSelect.png')}/>
                 </TouchableOpacity>
               </View>
               <Text style={{height:30, fontSize:15, fontWeight:"bold", marginLeft:10}}>Password
               </Text>
               <View >
-                <TextInput onChangeText={text => this.onChangeCPassword(text)} value={this.state.cpassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureCPassword}>
+                <TextInput onChangeText={text => this.onChangeCPassword(text)} value={this.state.cpassword} autoCompleteType={"password"}  style={{borderWidth:1, height:35, padding:0, margin:0, paddingLeft:10, flex:1, width:"100%"}} secureTextEntry={this.state.secureCPassword}>
                 </TextInput >
                 <TouchableOpacity onPress={this.toggleSecureCPassword} style={{position:"absolute", width:30, height:35, top:0, right:20, }}>
-                  <Image style={{ width:35, height:35,}} source={require('../assets/images/oeil.png')}/>
+                  <Image style={{ width:35, height:35,}} source={this.state.secureCPassword?require('../assets/images/oeil.png'):require('../assets/images/oeilSelect.png')}/>
                 </TouchableOpacity>
               </View>
             </View>

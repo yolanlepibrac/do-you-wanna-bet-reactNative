@@ -1,13 +1,15 @@
 
 
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, Button, TouchableOpacity, Dimensions, TextInput, AsyncStorage, Alert } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, Button, TouchableOpacity, Dimensions, TextInput, Alert, Image } from 'react-native';
 import { connect } from "react-redux";
 
 import API from '../Utils/API';
 import Utils from '../Utils/Utils';
 import Signup from './Signup';
 import Login from './Login';
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -109,7 +111,7 @@ class NoAccountComponent extends React.Component {
       this.props.navigation.navigate("TopNavigation", {email:email})
       this.setState({displayLoading:false})
     }).catch(error => {
-        this._showAlert("Error, please check your connexion")
+        this._showAlert('Error', "Error, please check your connexion")
         console.log(error)
         this.setState({displayLoading:false})
     });
@@ -121,7 +123,7 @@ class NoAccountComponent extends React.Component {
     this.setState({displayLoading:true})
     API.getUserDataByEmail(email).then((dataCurrentUser)=>{
       if(dataCurrentUser.status != 200 ){
-        this._showAlert("sorry we did not find you account, check your connexion")
+        this._showAlert('Error', "sorry we did not find you account, check your connexion")
         this.setState({displayLoading:false})
       }
       console.log("userdata ok")
@@ -145,7 +147,7 @@ class NoAccountComponent extends React.Component {
         });
       });
     }).catch(error => {
-      this._showAlert("the server can not be reached. Please, check your connexion !")
+      this._showAlert('Error', "the server can not be reached. Please, check your connexion !")
       this.setState({displayLoading:false})
     });
     //this.props.navigation.navigate("TopNavigation", {email:email})
@@ -158,19 +160,19 @@ class NoAccountComponent extends React.Component {
       this.setState({displayLoading:false})
     }
     if(userName.length === 0){
-      this._showAlert("Please choose a user name")
+      this._showAlert('Error', "Please choose a user name")
       return;
     }
     if(email.length === 0){
-      this._showAlert("Please fill your email")
+      this._showAlert('Error', "Please fill your email")
       return;
     }
     if(imageProfil.length === 0){
-      this._showAlert("Please pick a profile picture")
+      this._showAlert('Error', "Please pick a profile picture")
       return;
     }
     if(password.length === 0 || password !== cpassword){
-      this._showAlert("Carefull, password and confirm password does not match or are invalid")
+      this._showAlert('Error', "Carefull, password and confirm password does not match or are invalid")
       return;
     }
     var _send = {
@@ -190,24 +192,25 @@ class NoAccountComponent extends React.Component {
         this.props.getUserFriends([]);
         this.props.getUserBets([]);
         this.props.getUserWitnessOf([]);
-        this.props.navigation.navigate("TopNavigation", {email:data.data.userData.email})
+        this.props.navigation.navigate("FriendsContainer", {email:data.data.userData.email})
+        this._showAlert('Information', "Add friends to make your first bet !")
         this.stayLog(data.data.userData.email)
         this.setState({displayLoading:false});
       }else if(data.status === 204){
-        this._showAlert("This email is already used")
+        this._showAlert('Error', "This email is already used")
         this.setState({displayLoading:false})
       }
     },(error) => {
-        this._showAlert("error with server")
+        this._showAlert('Error', "error with server")
         console.log(error)
         this.setState({displayLoading:false});
     })
   }
 
 
-  _showAlert = (errorMessage) => {
+  _showAlert = (title, errorMessage) => {
     Alert.alert(
-      'Error',
+      title,
       errorMessage,
       [
         {text: 'OK', onPress: () => console.log('OK Pressed')},
@@ -227,6 +230,7 @@ class NoAccountComponent extends React.Component {
         <ActivityIndicator color={"green"} size={"large"}></ActivityIndicator>
         :
         <View style={{flex:1, flexDirection:"column", alignItems:"center", justifyContent:"center", width:screenWidth}}>
+          <Image style={{position:"absolute", height:400, width:400, opacity:0.5}} source={require('../assets/images/logo2.png')}/>
           {this.state.popupConnexion || this.state.popupSignUp ?
             <TouchableOpacity onPress={this.quitLoginAndSignUp} style={{position:"absolute", top:0, left:0, zIndex:10, width:screenWidth, height:screenHeight,}}>
             </TouchableOpacity>
@@ -234,13 +238,13 @@ class NoAccountComponent extends React.Component {
           }
           {this.state.popupConnexion ?
             <View style={{width:screenWidth*0.9, position:"absolute", top:100,  zIndex:11}}>
-              <Login login={this.login} displayLoading={this.displayLoading} setError={this._showAlert} quit={this.quitLoginAndSignUp}/>
+              <Login login={this.login} displayLoading={this.displayLoading} quit={this.quitLoginAndSignUp}/>
             </View>
             : null
           }
           {this.state.popupSignUp ?
             <View style={{width:screenWidth*0.9, position:"absolute",  top:50,  zIndex:11}}>
-              <Signup signup={this.signup} displayLoading={this.displayLoading} setError={this._showAlert} quit={this.quitLoginAndSignUp}/>
+              <Signup signup={this.signup} displayLoading={this.displayLoading} quit={this.quitLoginAndSignUp}/>
             </View>
             : null
            }
