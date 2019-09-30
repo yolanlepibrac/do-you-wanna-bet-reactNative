@@ -28,7 +28,7 @@ export default class MyAppComponent extends React.Component {
       <View style={{flex:1, flexDirection:"column", justifyContent:"flex-start", alignItems:"center"}}>
         <YolanHeader height={30} fontSize={15} backgroundColor={'rgba(0, 125, 33,1)'}>Do you wanna bet ?
         </YolanHeader>
-        <View style={{flex:1,  flexDirection:"row"}}>
+        <View style={{flex:1,  flexDirection:"row", backgroundColor:"rgba(156, 255, 169,1)"}}>
           <Navigation/>
         </View>
       </View>

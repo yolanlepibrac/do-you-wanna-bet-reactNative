@@ -47,7 +47,10 @@ class FriendsContainerComponent extends React.Component {
 
   componentDidUpdate(prevProps){
     if (prevProps.isFocused !== this.props.isFocused) {
-      this.setState({friends : this.props.accountState.friends})
+      this.setState({
+        friends : this.props.navigation.getParam('friends', this.props.accountState.friends),
+        tabOfIdOfFriendsAreadyFriends : this.props.navigation.getParam('tabOfIdOfFriendsAreadyFriends', this.state.tabOfIdOfFriendsAreadyFriends),
+      })
     }
   }
 
@@ -137,7 +140,11 @@ class FriendsContainerComponent extends React.Component {
   }
 
   openFriend = (friend) => {
-    this.props.navigation.navigate("FriendDetail", {friend:friend})
+    this.props.navigation.navigate("FriendDetail", {
+      friend:friend,
+      alreadyFriend:this.state.tabOfIdOfFriendsAreadyFriends.map((friend)=>(friend.id)).includes(friend.id),
+      toggleFriend: this.toggleFriend.bind(this)
+    })
   }
 
   onRefresh = () => {

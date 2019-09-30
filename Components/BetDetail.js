@@ -229,12 +229,12 @@ class BetDetailComponent extends React.Component {
           <ScrollView nestedScrollEnabled={true} style={{flex:1}}>
             {this.state.bet !== undefined ?
             <View style={{flex:1, paddingLeft:20, paddingRight:20, flexDirection:"column", alignItems:"center"}}>
-              <View style={{flex:0.75, fontSize:17, color:"black",  flexDirection:"column", alignItems:"center", justifyContent:"center", paddingBottom:5, paddingTop:5}}>
-                <View style={{flexDirection:"column", alignItems:"flex-start", justifyContent:"center"}}>
+              <View style={{flex:0.75, fontSize:17, color:"black",  flexDirection:"column", alignItems:"center", justifyContent:"center", paddingBottom:5, paddingTop:5, width:"100%"}}>
+                <View style={{flexDirection:"column", alignItems:"flex-start", justifyContent:"center", width:"100%"}}>
                   <Text style={{fontWeight:"bold", color:"black"}}>Title</Text>
                   <Text style={{fontSize:17, textAlign:"justify"}}>{this.state.bet.title}</Text>
                 </View>
-                <View style={{flexDirection:"column", alignItems:"flex-start", justifyContent:"center", marginTop:20}}>
+                <View style={{flexDirection:"column", alignItems:"flex-start", justifyContent:"center", marginTop:20, width:"100%"}}>
                   <Text style={{fontWeight:"bold", color:"black"}}>Price</Text>
                   <Text style={{color:"rgba(155,155,155,1)", fontSize:15, textAlign:"justify"}}>{this.state.bet.issue}</Text>
                 </View>

@@ -1,12 +1,13 @@
 
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, TextInput, Image, Alert, ScrollView } from 'react-native';
 import { connect } from "react-redux";
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { ProgressCircle }  from 'react-native-svg-charts'
 
 import { replaceFriend } from "../Redux/Actions/index";
+import { setFriendsState } from "../Redux/Actions/index";
 import Utils from "../Utils/Utils"
 import API from '../Utils/API';
 
@@ -16,6 +17,7 @@ import { withNavigationFocus } from 'react-navigation';
 function mapDispatchToProps(dispatch) {
   return {
     replaceFriend: (friend) => dispatch(replaceFriend(friend)),
+    setFriendsState: (tabOfFriends) => dispatch(setFriendsState(tabOfFriends)),
   };
 };
 
@@ -24,7 +26,6 @@ class FriendDetailComponent extends React.Component {
     super(props)
     this.state = {
       myMark : 0,
-      friend : this.props.friend,
       made : 0,
       refused : 0,
      }
@@ -38,21 +39,14 @@ class FriendDetailComponent extends React.Component {
     }
   }
 
-  toggleFriend = () => {
-    this.props.onClick(this.state.friend)
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.isFocused !== this.props.isFocused) {
-      this.setState({
-        friend : this.props.navigation.getParam('friend', undefined),
-      })
-    }
-  }
 
   componentDidMount() {
 
-    this.getPermissionAsync();
+    this.setState({
+      friends : this.props.navigation.getParam('friends', undefined),
+      alreadyFriend : this.props.navigation.getParam('alreadyFriend', false),
+    });
+
     let friend = this.props.navigation.getParam('friend', undefined)
     this.setState({
       friend : friend,
@@ -67,6 +61,23 @@ class FriendDetailComponent extends React.Component {
     }
   }
 
+  componentDidUpdate = (prevProps) => {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.setState({
+        friend : this.props.navigation.getParam('friend', undefined),
+        alreadyFriend : this.props.navigation.getParam('alreadyFriend', false),
+      });
+    }
+  }
+
+  toggleFriend = () => {
+    const toggleFriend = this.props.navigation.getParam('toggleFriend');
+    toggleFriend(this.state.friend);
+    this.setState({alreadyFriend:!this.state.alreadyFriend})
+  }
+
+
+
   isWitnessOfMyBet = (friend) =>  {
     let friendWasWitnessOfMyBet = false
     for (var i = 0; i < this.props.accountState.bets.length; i++) {
@@ -79,14 +90,6 @@ class FriendDetailComponent extends React.Component {
     return friendWasWitnessOfMyBet
   }
 
-  getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to create your account ! Don\'t worry, we will never use it againt you');
-      }
-    }
-  }
 
   toggleRankFriend = () => {
     console.log(this.state.friend.judgeNotes)
@@ -158,10 +161,24 @@ class FriendDetailComponent extends React.Component {
 
 
   render(){
-
+    const { params} = this.props.navigation.state;
     if(this.state.friend !== undefined && !this.state.displayLoading){
       return(
+      <ScrollView>
         <View style={{flex:1, flexDirection:"column",marginTop:10, alignItems:"center", justifyContent:"center", paddingLeft:20, paddingRight:20}}>
+
+          <View style={{height:170, flexDirection:"row"}}>
+            {!this.state.alreadyFriend ?
+              <TouchableOpacity onPress={this.toggleFriend}  style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
+                <Text style={{color:"white", fontWeight:"bold"}}>ADD FRIEND</Text>
+              </TouchableOpacity>
+              :
+              <TouchableOpacity onPress={this.toggleFriend} style={{backgroundColor:"rgba(219,110,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
+                <Text style={{color:"white", fontWeight:"bold"}}>DELETE FRIEND</Text>
+              </TouchableOpacity>
+            }
+          </View>
+
           <View style={{height:170, flexDirection:"row"}}>
             {this.state.friend.imageProfil ?
               <Image source={{uri:this.state.friend.imageProfil}} style={{borderRadius:75, width:150, height:150}}/>
@@ -261,6 +278,7 @@ class FriendDetailComponent extends React.Component {
           }
 
         </View>
+      </ScrollView>
       )
     }else{
       return(
