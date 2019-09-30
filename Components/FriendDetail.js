@@ -165,9 +165,9 @@ class FriendDetailComponent extends React.Component {
     if(this.state.friend !== undefined && !this.state.displayLoading){
       return(
       <ScrollView>
-        <View style={{flex:1, flexDirection:"column",marginTop:10, alignItems:"center", justifyContent:"center", paddingLeft:20, paddingRight:20}}>
+        <View style={{flex:1, flexDirection:"column",marginTop:10, alignItems:"center", justifyContent:"center", paddingLeft:20, paddingRight:20, paddingBottom:30}}>
 
-          <View style={{height:170, flexDirection:"row"}}>
+          <View style={{flexDirection:"row"}}>
             {!this.state.alreadyFriend ?
               <TouchableOpacity onPress={this.toggleFriend}  style={{backgroundColor:"rgba(110,219,124,1)", borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
                 <Text style={{color:"white", fontWeight:"bold"}}>ADD FRIEND</Text>
@@ -179,7 +179,7 @@ class FriendDetailComponent extends React.Component {
             }
           </View>
 
-          <View style={{height:170, flexDirection:"row"}}>
+          <View style={{height:170, flexDirection:"row", marginTop:20}}>
             {this.state.friend.imageProfil ?
               <Image source={{uri:this.state.friend.imageProfil}} style={{borderRadius:75, width:150, height:150}}/>
               :
@@ -190,6 +190,7 @@ class FriendDetailComponent extends React.Component {
               <Text style={{fontSize:15, color:"rgba(100,100,100,1)"}}>{this.state.friend.email}</Text>
             </View>
           </View>
+
           <View style={{width:"100%", height:1, backgroundColor:"rgba(100,100,100,1)", flexDirection:"row"}}>
           </View>
 
@@ -229,6 +230,7 @@ class FriendDetailComponent extends React.Component {
 
           <View style={{width:"100%", height:1, backgroundColor:"rgba(100,100,100,1)", flexDirection:"row"}}>
           </View>
+
           <View style={{flex:1, flexDirection:"column", marginTop:30, alignItems:"center",}}>
             <View style={{height:50, flexDirection:"row", alignItems:"center", justifyContent:"center"}}>
               {this.state.friend.witnessOf !== undefined ?
@@ -241,8 +243,8 @@ class FriendDetailComponent extends React.Component {
                 {Utils.displayMark(this.calculjudgeNote(this.state.friend.judgeNotes), 300)}
               </TouchableOpacity>
               :
-              <TouchableOpacity onPress={this.toggleRankFriend} style={{backgroundColor:"rgba(110,219,124,1)", borderWidth:0, borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
-                <Text style={{color:"white", fontWeight:"bold"}}>Rank my friend</Text>
+              <TouchableOpacity onPress={this.toggleRankFriend} style={{backgroundColor:"rgba(150,150,150,1)", borderWidth:0, borderColor:"white", width:200, height:50,alignItems:"center", justifyContent:"center", borderRadius:2 }}>
+                <Text style={{color:"white", fontWeight:"bold"}}>RANK HIS JUDGMENT</Text>
               </TouchableOpacity>
             }
           </View>
